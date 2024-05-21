@@ -30,8 +30,7 @@ urlpatterns = [
     path('api/bookings', apis.get_bookings, name='bookings'),
     
     # Test
-    path('create-test-user', tests.create_test_user, name='create-test-user'),
-    path('test-email', tests.test_send_mail, name='test-email'),    
+    path('create-test-user', tests.create_test_user, name='create-test-user'),     
     
     # accounts
     path('accounts/', include('django.contrib.auth.urls')),
