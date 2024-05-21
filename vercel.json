@@ -21,8 +21,5 @@
             "src": "/(.*)",
             "dest": "vietanres/wsgi.py"
         }
-    ],
-    "env": {
-        "VERCEL_BUILD_SYSTEM_REPORT": "1"
-    }
+    ]
 }
