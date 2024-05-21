@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/booking-events', apis.get_calendar_events, name='booking-events'),
     path('api/order', apis.order, name='order'),
     path('api/bookings', apis.get_bookings, name='bookings'),
+    path('api/toggle-availability', apis.toggle_booking_status, name='toggle-availability'),
     
     # Test
     path('create-test-user', tests.create_test_user, name='create-test-user'),     

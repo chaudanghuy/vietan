@@ -8,7 +8,11 @@
                 <h2>Flavors of the East, Served with Passion</h2>
 
                 <div class="btns">
-                    <a href={% url 'order-online' %} class="btn-menu animated fadeInUp scrollto">Order Online <i class="bi bi-cart"></i></a>
+					{% if restaurant.booking_enabled == '1' %}
+						<a href={% url 'order-online' %} class="btn-menu animated fadeInUp scrollto">Order Online <i class="bi bi-cart"></i></a>
+					{% else %}
+						<a data-bs-toggle="modal" data-bs-target="#busyModal" class="btn-menu animated fadeInUp scrollto">Order Online <i class="bi bi-cart"></i></a>
+					{% endif %}
                     <a href={% url 'book' %} class="btn-book animated fadeInUp scrollto">Book a Table</a>
                 </div>
             </div>
@@ -457,6 +461,32 @@
         </div>
     </div>
 </div>
+
+<!-- Notice Modal -->
+    <div class="modal fade" id="busyModal" tabindex="-1" aria-labelledby="busyModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header p-3 mb-2 bg-dark">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color: #CDA45E;">Service Busy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card bg-dark  mb-3">
+                        <!-- <div class="card-body"> -->
+                        <p>
+                            We are sorry but we are experiencing more orders than usual at the moment. Please try again later
+                        </p>
+                        <!-- </div> -->                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Agree</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- Card Modal -->
 {% include 'includes/client/cart_modal.html' %} {% endblock %}

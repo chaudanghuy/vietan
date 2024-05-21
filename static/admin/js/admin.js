@@ -114,6 +114,29 @@ $(document).ready(function() {
             }
         })
     })
+		
+	$('.cb-value').click(function() {
+	  var mainParent = $(this).parent('.toggle-btn');
+	  var toggleStatus = false;
+	  if($(mainParent).find('input.cb-value').is(':checked')) {
+		$(mainParent).addClass('active');
+		toggleStatus = true;
+	  } else {
+		$(mainParent).removeClass('active');		
+	  }
+	  
+	  $.ajax({
+        url: '/api/toggle-availability',
+        method: 'POST',
+        data: { 
+			status: toggleStatus,
+			csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+		},
+        success: function(response) {
+			console.log(response)
+        }
+	  })
+	})
 })
 
 $('#find-bookings').on('click', function() {

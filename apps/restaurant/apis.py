@@ -355,3 +355,13 @@ def remote_from_cart(request, food_id):
 @require_GET
 def cart_detail(request):
     return request.session.get(settings.CART_SESSION_ID, {})
+
+@require_POST
+def toggle_booking_status(request):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        restaurant = Restaurant.objects.first()
+        restaurant.booking_enabled = (status == 'true')
+        restaurant.save()
+        return JsonResponse({'message': 'Booking status toggled successfully.', 'booking_status': restaurant.booking_enabled})
+    return JsonResponse({'message': 'Invalid request.'}, status=400)

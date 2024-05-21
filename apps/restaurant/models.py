@@ -21,6 +21,7 @@ class Restaurant(models.Model):
     email = models.CharField(max_length=100)
     description = models.TextField()
     opening_hours = models.TextField()
+    booking_enabled = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.name

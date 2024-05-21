@@ -63,6 +63,9 @@ def customer_gallery(request):
 
 def customer_order(request):
     restaurant = Restaurant.objects.all()[0]
+    if (restaurant.booking_enabled != '1'):
+        return redirect('home')
+    
     foods = Food.objects.annotate(
         first_space=StrIndex('name', V(' '))
     ).annotate(
@@ -306,8 +309,9 @@ def admin_calendar(request):
     booking_lists = Booking.objects.filter(
         booking_date=booking_date.date()
     ).exclude(customer__address__icontains='pickup-order').exclude(special_requests='delivery-order')
+    restaurant = Restaurant.objects.first()
 
-    return render(request, 'admin/admin_booking_tables.html', {'available_time_slots': available_time_slots, 'tables': tables, 'date': date, 'booked_tables': booked_tables, 'booking_lists': booking_lists})
+    return render(request, 'admin/admin_booking_tables.html', {'available_time_slots': available_time_slots, 'tables': tables, 'date': date, 'booked_tables': booked_tables, 'booking_lists': booking_lists, 'restaurant': restaurant})
 
 @login_required
 def admin_booking_tables(request):
@@ -415,7 +419,8 @@ def admin_booking_tables(request):
     booking_lists = Booking.objects.order_by('-id')
 
     booking_date_show = booking_date.strftime('%Y-%m-%d')
-    return render(request, 'admin/admin_booking_tables.html', {'available_time_slots': available_time_slots, 'tables': tables, 'date': date, 'booked_tables': booked_tables, 'booking_lists': booking_lists, 'booking_date': booking_date_show})
+    restaurant = Restaurant.objects.first()
+    return render(request, 'admin/admin_booking_tables.html', {'available_time_slots': available_time_slots, 'tables': tables, 'date': date, 'booked_tables': booked_tables, 'booking_lists': booking_lists, 'booking_date': booking_date_show, 'restaurant': restaurant})
 
 @login_required
 def admin_profile(request):
