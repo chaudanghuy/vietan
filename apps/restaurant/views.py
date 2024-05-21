@@ -63,7 +63,7 @@ def customer_gallery(request):
 
 def customer_order(request):
     restaurant = Restaurant.objects.all()[0]
-    if (restaurant.booking_enabled != '1'):
+    if (restaurant.booking_enabled == False):
         return redirect('home')
     
     foods = Food.objects.annotate(

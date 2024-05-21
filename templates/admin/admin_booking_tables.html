@@ -40,8 +40,8 @@ Bookings Management
                     </div>
 					<div class="col-md-6 col-sm-12 text-right">
                       <p>Toggle <code>OFF</code> to disable Order Online</p>
-					  {% csrf_token %}								  
-                      <div class="toggle-btn {% if restaurant.booking_enabled == 1 %}active{% endif %}">
+					  {% csrf_token %}								  					  
+                      <div class="toggle-btn {% if restaurant.booking_enabled %}active{% endif %}">
 						  <input type="checkbox"  checked class="cb-value" />
 						  <span class="round-btn"></span>
 						</div>
