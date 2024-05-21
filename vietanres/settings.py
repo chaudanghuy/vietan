@@ -39,7 +39,7 @@ SECRET_KEY = "django-insecure-j=z_w$hs&p(^bfp6rzkxp7e@52akejq72d37@d1h1_crb+av-j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("ENV") == "Local" 
 
-ALLOWED_HOSTS = ["51.195.101.225", "127.0.0.1", "viet-an.co.uk", "vietan.phapsuit.com","localhost"]
+ALLOWED_HOSTS = ["51.195.101.225", "127.0.0.1", "viet-an.co.uk", "vietan.phapsuit.com","localhost", ".vercel.app"]
 
 
 # Application definition
@@ -105,18 +105,15 @@ if DATABASE_TYPE == "postgres":
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            # "ENGINE": "django.db.backends.sqlite3",
+            # "NAME": BASE_DIR / "db.sqlite3",
 
-            # 'ENGINE': 'django.db.backends.mysql',
-            # 'OPTIONS': {
-            #     'init_command': 'SET default_storage_engine=INNODB',
-            # },
-            # 'NAME': 'vietan',
-            # 'USER': 'root',
-            # 'PASSWORD': '',
-            # 'HOST': 'localhost',
-            # 'PORT': '3306',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'railway',
+            'USER': 'postgres',
+            'PASSWORD': 'LwpsggBKmlGSRDbTJIrpjNeqZfajEFTc',
+            'HOST': 'viaduct.proxy.rlwy.net',
+            'PORT': '40117',
         },
     }
 
@@ -156,7 +153,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build", "static")
 
 # Default primary key field type
