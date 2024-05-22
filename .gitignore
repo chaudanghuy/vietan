@@ -1,1 +1,4 @@
 vietanres/__pycache__
+.env
+db.sqlite3
+google-credentials.json
