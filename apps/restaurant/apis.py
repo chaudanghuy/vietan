@@ -106,6 +106,10 @@ def book_table(request):
     restaurant = Restaurant.objects.all()[0]
     # Call Calender API
     helpers.book_calender_api(booking_date, booking_time, duration, data.get('fullname'), data.get('phone'), total_customer, restaurant.address, special_request)
+    
+    # Send Email
+    helpers.send_email(data.get('fullname'), total_customer, booking_date, booking_time, data.get('phone'), data.get('email'))  
+
     return JsonResponse({
         'message': 'Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!',
         'booking_datetime': booking_datetime.strftime('%Y-%m-%d %H:%M'),

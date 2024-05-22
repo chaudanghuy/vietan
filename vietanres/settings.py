@@ -26,6 +26,17 @@ RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
 CALENDAR_ID = os.getenv("CALENDAR_ID")
 CALENDAR_ORDER_ID = os.getenv("CALENDAR_ORDER_ID")
 
+# DB
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+
+# Mail
+MAIL_API_KEY = os.getenv("MJ_APIKEY_PUBLIC")    
+MAIL_SECRET_KEY = os.getenv("MJ_APIKEY_PRIVATE")
+FROM_EMAIL = os.getenv("FROM_EMAIL")
+CC_EMAIL = os.getenv("CC_EMAIL")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -102,9 +113,9 @@ elif DATABASE_TYPE == "mysql":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "NAME": "vietan",
-            "USER": "djangouser",
-            "PASSWORD": "yourpassword",
+            "NAME": DB_NAME,
+            "USER": DB_USER,
+            "PASSWORD": DB_PASS,
             "HOST": "localhost",
             "PORT": "3306",
         }

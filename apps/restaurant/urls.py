@@ -31,7 +31,8 @@ urlpatterns = [
     path('api/toggle-availability', apis.toggle_booking_status, name='toggle-availability'),
     
     # Test
-    path('create-test-user', tests.create_test_user, name='create-test-user'),     
+    # path('create-test-user', tests.create_test_user, name='create-test-user'),
+    # path('dummy-test', tests.dummy_booking, name='dummy-test'),     
     
     # accounts
     path('accounts/', include('django.contrib.auth.urls')),
