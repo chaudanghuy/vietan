@@ -91,23 +91,16 @@ WSGI_APPLICATION = "vietanres.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if DATABASE_TYPE == "postgres":
+if ENV == "Local":
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "vietan",
-            "USER": "vadbacc",
-            "PASSWORD": "vadbres@123",
-            "HOST": "localhost",
-            "PORT": "",
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",            
         }
     }
 else:
     DATABASES = {
-        "default": {
-            # "ENGINE": "django.db.backends.sqlite3",
-            # "NAME": BASE_DIR / "db.sqlite3",
-
+        "default": {            
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'railway',
             'USER': 'postgres',
@@ -153,8 +146,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+if ENV == 'Local':
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
