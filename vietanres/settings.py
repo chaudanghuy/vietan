@@ -17,14 +17,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Environment variables
-DATABASE_TYPE = os.getenv("DATABASE_TYPE")
-ENV = os.getenv("ENV")
-THEME = os.getenv("THEME")
-TOTAL_TABLE = os.getenv("TOTAL_TABLE")
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
-CALENDAR_ID = os.getenv("CALENDAR_ID")
-CALENDAR_ORDER_ID = os.getenv("CALENDAR_ORDER_ID")
+DATABASE_TYPE = os.environ.get("DATABASE_TYPE")
+ENV = os.environ.get("ENV")
+THEME = os.environ.get("THEME")
+TOTAL_TABLE = os.environ.get("TOTAL_TABLE")
+RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
+CALENDAR_ID = os.environ.get("CALENDAR_ID")
+CALENDAR_ORDER_ID = os.environ.get("CALENDAR_ORDER_ID")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
