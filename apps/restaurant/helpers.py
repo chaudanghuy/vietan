@@ -119,8 +119,7 @@ def send_email(cust_name, cust_total, book_date, book_time, cus_phone, cus_email
             }
         ]
     }
-    result = mailjet.send.create(data=data)
-    print(result.json())       
+    result = mailjet.send.create(data=data)    
 
 def get_day_suffix(day):
     if 11 <= day <= 13:
