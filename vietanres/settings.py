@@ -91,11 +91,22 @@ WSGI_APPLICATION = "vietanres.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if ENV == "Local":
+if DATABASE_TYPE == "sqlite":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",            
+        }
+    }
+elif DATABASE_TYPE == "mysql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "vietan",
+            "USER": "djangouser",
+            "PASSWORD": "yourpassword",
+            "HOST": "localhost",
+            "PORT": "3306",
         }
     }
 else:
