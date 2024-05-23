@@ -114,29 +114,29 @@ $(document).ready(function() {
             }
         })
     })
-		
-	$('.cb-value').click(function() {
-	  var mainParent = $(this).parent('.toggle-btn');
-	  var toggleStatus = false;
-	  if($(mainParent).find('input.cb-value').is(':checked')) {
-		$(mainParent).addClass('active');
-		toggleStatus = true;
-	  } else {
-		$(mainParent).removeClass('active');		
-	  }
-	  
-	  $.ajax({
-        url: '/api/toggle-availability',
-        method: 'POST',
-        data: { 
-			status: toggleStatus,
-			csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
-		},
-        success: function(response) {
-			console.log(response)
+
+    $('.cb-value').click(function() {
+        var mainParent = $(this).parent('.toggle-btn');
+        var toggleStatus = false;
+        if ($(mainParent).find('input.cb-value').is(':checked')) {
+            $(mainParent).addClass('active');
+            toggleStatus = true;
+        } else {
+            $(mainParent).removeClass('active');
         }
-	  })
-	})
+
+        $.ajax({
+            url: '/api/toggle-availability',
+            method: 'POST',
+            data: {
+                status: toggleStatus,
+                csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                console.log(response)
+            }
+        })
+    })
 })
 
 $('#find-bookings').on('click', function() {
@@ -217,3 +217,53 @@ $('.show-booking-detail').click(function() {
         }
     })
 })
+
+$('.booking-modal-detail').on('click', function() {
+    var data_booking_ids = $(this).data('booking-ids');
+
+    var array = JSON.parse(data_booking_ids.replace(/'/g, '"'));
+    var booking_ids = '';
+
+
+    var table = '';
+    $.each(array, function(index, item) {
+        booking_ids += item + ','
+        $.ajax({
+            url: '/api/bookings?booking_id=' + item,
+            type: 'GET',
+            success: function(response) {
+                var html = ''
+                html += 'Booking <code>#' + response.id + '</code>'
+                html += '<table class="table table-bordered">'
+                html += '<tr><td>Number of people</td><td>' + response.total_people + '</td></tr>'
+                html += '<tr><td>Date</td><td>' + response.booking_date + '</td></tr>'
+                html += '<tr><td>Time</td><td>' + response.booking_time + '</td></tr>'
+                html += '<tr><td>Customer</td><td>' + response.customer_name + '</td></tr>'
+                html += '<tr><td>Phone</td><td>' + response.customer_phone + '</td></tr>'
+                html += '<tr><td>Email</td><td>' + response.customer_email + '</td></tr>'
+                html += '</table>'
+                table += html
+
+                $('.admin-booking-body').html(table);
+            }
+        });
+    })
+
+    $('#adminBookingModal').modal('show');
+
+    $('#admin-cancel-booking').on('click', function() {
+        $.ajax({
+            url: '/api/cancel-booking',
+            method: 'POST',
+            data: {
+                booking_ids: booking_ids,
+                csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                $('#adminBookingModal').modal('hide');
+                alert('Booking cancelled successfully')
+                window.location.reload();;
+            }
+        })
+    })
+});

@@ -223,10 +223,10 @@ def edit_food(request):
 
 @require_GET
 def get_calendar_events(request):
-    bookings = Booking.objects.filter(customer__address__icontains='pickup-order') 
+    bookings = Booking.objects.filter(customer__address__icontains='pickup-order')     
     events = [{
         'start': f"{booking.booking_date} {booking.booking_time}",
-        'end': (dt.strptime(f"{booking.booking_date} {booking.booking_time}", "%Y-%m-%d %H:%M") + timedelta(minutes=booking.duration)).strftime('%Y-%m-%d %H:%M'),
+        'end': booking.duration,
         'title': booking.customer.user.fullname,
         'description': 'Number of guests: ' + str(booking.number_of_guests) + '\r' + 'Phone: ' + str(booking.customer.phone) + '\r' + 'Email: ' + str(booking.customer.user.email) + '\n' + 'Special requests: ' + booking.special_requests
     } for booking in bookings]
@@ -311,6 +311,7 @@ def get_bookings(request):
         booking_data = {
             'id': booking.id,
             'customer_name': customer.user.fullname,
+            'total_people': booking.number_of_guests,
             'customer_email': customer.user.email,
             'customer_phone': customer.phone,
             'customer_address': customer.address,
@@ -330,6 +331,7 @@ def get_bookings(request):
         return JsonResponse(booking_data)
     else:
         return JsonResponse({'message': 'Invalid request.'}, status=400)
+
 
 @require_POST
 def add_to_cart(request):
@@ -369,3 +371,16 @@ def toggle_booking_status(request):
         restaurant.save()
         return JsonResponse({'message': 'Booking status toggled successfully.', 'booking_status': restaurant.booking_enabled})
     return JsonResponse({'message': 'Invalid request.'}, status=400)
+
+@require_POST
+def delete_bookings(request):
+    if request.method == 'POST':
+        booking_ids = request.POST.get('booking_ids')
+        booking_ids = booking_ids.split(',')
+        for booking_id in booking_ids:
+            try:
+                booking = Booking.objects.get(pk=booking_id)    
+                booking.delete()
+            except:
+                booking = None
+        return JsonResponse({'message': 'Bookings deleted successfully.'})    

@@ -85,18 +85,22 @@ Bookings Management
                             {{booking_time.start_time}}
                           {% endif %}>                          
                         {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}                           
-                          <h6>Booking:</h6>
+                          <h6>
+                              <a type="button" class="btn btn-info booking-modal-detail" data-booking-ids="{{booking_time.booking_ids}}">
+                                  Booking
+                              </a>
+                          </h6>
 						  {% for book_phone in booking_time.booking_phone %}
-                            {% with parts=book_phone|split:"-"  %}                              
-                              {% if parts.0 == table.table_number %}                                                          
+                            {% with parts=book_phone|split:"-"  %}
+                              {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small id="myInput">{{parts.1}}</small>
-                              {% endif %}                              
+                              {% endif %}
                             {% endwith %}                            
                           {% endfor %}   
                           -                                                                           
                           {% for book_email in booking_time.table_book_name %}
                             {% with parts=book_email|split:"-"  %}                              
-                              {% if parts.0 == table.table_number %}                                                          
+                              {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small>{{parts.1}}</small>
                               {% endif %}                              
                             {% endwith %}                            
@@ -125,5 +129,25 @@ Bookings Management
         </div>
         {% include '../includes/admin/footer.html' %}
     </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="adminBookingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Booking Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body admin-booking-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="admin-cancel-booking" type="button" class="btn btn-danger">Cancel Booking</button>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
