@@ -12,7 +12,6 @@ from datetime import datetime as dt, timedelta
 
 # API
 @require_POST
-@csrf_exempt
 def book_table(request):
     if request.method == 'POST':
         data = request.POST 

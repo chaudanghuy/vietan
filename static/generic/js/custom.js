@@ -35,9 +35,7 @@ $(function() {
 
     var myModalEl = document.getElementById('reservationModal')
     myModalEl.addEventListener('hidden.bs.modal', function(event) {
-        setTimeout(function() {
-            window.location.reload();
-        }, 3000);
+        window.location.reload();
     });
 
     $('#pickup-date').datepicker({
@@ -132,6 +130,8 @@ $('#sendMessage').on('click', function(e) {
 });
 
 $('#booking-btn').on('click', function(e) {
+    var bookingButton = $(this);
+    bookingButton.prop('disabled', true);
     e.preventDefault();
     var fullname = $('input[name=fullname]').val().trim();
     if (fullname === '') {
@@ -195,7 +195,8 @@ $('#booking-btn').on('click', function(e) {
             booking_date: booking_date,
             booking_time: booking_time,
             total_customer: total_customer,
-            special_requests: special_requests
+            special_requests: special_requests,
+            csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
         },
         success: function(response) {
 
@@ -230,11 +231,15 @@ $('#booking-btn').on('click', function(e) {
             }).fail(function(error) {
                 // $('.error-message').text('Oops... ' + JSON.stringify(error)).show();
             });
+
+            bookingButton.prop('disabled', false);
         },
         error: function(xhr, errmsg, err) {
             $('.loading').hide();
             $('.sent-message').hide();
             $('.error-message').text(xhr.responseText).show();
+
+            bookingButton.prop('disabled', false);
         }
     });
 });
