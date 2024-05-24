@@ -100,9 +100,9 @@ Bookings Management
                                 {% for booking_id in booking_time.booking_ids %}
                                     {% with b_parts=booking_id|split:"|"  %}
                                       {% if b_parts.0 == table.table_number|stringformat:"i" %}
-                                        <a class="booking-modal-detail" data-booking-id="{{b_parts.1}}">
-                                          <i class="fa-solid fa-calendar-days"></i>
-                                        </a>
+                                        <button class="booking-modal-detail" data-booking-id="{{b_parts.1}}">
+                                          <i class="fa-solid fa-user-group"></i>
+                                        </button>
                                       {% endif %}
                                     {% endwith %}
                                 {% endfor %}
