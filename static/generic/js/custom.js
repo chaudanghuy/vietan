@@ -238,7 +238,7 @@ $('#booking-btn').on('click', function(e) {
         error: function(xhr, errmsg, err) {
             $('.loading').hide();
             $('.sent-message').hide();
-            $('.error-message').text(xhr.responseText).show();
+            $('.error-message').html(xhr.responseText).show();
 
             bookingButton.prop('disabled', false);
         }
