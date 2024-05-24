@@ -12,7 +12,7 @@ SCOPES = ["https://www.googleapis.com/auth/calendar"]
 SERVICE_ACCOUNT_FILE = "./google-credentials.json"
 
 
-def book_calender_api(booking_date, booking_time, duration, customer_name, customer_phone, total_people, restaurant_address, special_request):
+def book_calender_api(booking, booking_date, booking_time, duration, customer_name, customer_phone, total_people, restaurant_address, special_request):
     print("RUNNING CALENDER")
     credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES
@@ -48,8 +48,54 @@ def book_calender_api(booking_date, booking_time, duration, customer_name, custo
     }
 
     print(new_event)
-    service.events().insert(calendarId=CALENDAR_ID, body=new_event).execute()
+    event = service.events().insert(calendarId=CALENDAR_ID, body=new_event).execute()
+
+    if event:
+        booking.booking_event_id = event['id']
+        booking.save()
+    print(event)
     print("Event created")
+
+def delete_calender_api(event_id):
+    try:
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
+        service = googleapiclient.discovery.build("calendar", "v3", credentials=credentials)
+        eventDeleted = service.events().delete(calendarId=CALENDAR_ID, eventId=event_id).execute()
+        print(eventDeleted)
+        print('Event deleted')
+    except Exception as e:
+        print(e)
+
+def update_calendar_api(booking, booking_date, booking_time, duration, customer_name, customer_phone, total_people, restaurant_address, special_request):
+    try:
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
+        service = googleapiclient.discovery.build("calendar", "v3", credentials=credentials)
+
+        start_datetime_str = f"{booking_date}T{booking_time}:00"
+        start_datetime = dt.strptime(start_datetime_str, "%Y-%m-%dT%H:%M:%S")
+
+        # Calculate end datetime (start datetime plus 30 minutes)
+        end_datetime = start_datetime + timedelta(minutes=duration)
+
+        event = service.events().get(calendarId=CALENDAR_ID, eventId=booking.booking_event_id).execute()
+
+        event['summary'] = f'Booking: {customer_phone} - {customer_name}'
+        event['description'] = f'Phone: {customer_phone} - {total_people} People - Time: {booking_time} - {special_request}'
+        event['start'] = {
+            "dateTime": start_datetime.strftime("%Y-%m-%dT%H:%M:%S+01:00"),
+            "timeZone": "Europe/London",
+        }
+        event['end'] = {
+            "dateTime": end_datetime.strftime("%Y-%m-%dT%H:%M:%S+01:00"),
+            "timeZone": "Europe/London",
+        }
+        updated_event = service.events().update(calendarId=CALENDAR_ID, eventId=booking.booking_event_id, body=event).execute()
+    except:
+        print("Something went wrong")
 
 
 def order_calender_api(booking_date, booking_time, duration, customer_name, customer_phone, total_people, restaurant_address, detail_request, total_price_html, special_requests):

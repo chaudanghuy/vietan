@@ -66,6 +66,7 @@ class Booking(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tax = models.IntegerField(default=0) 
     booking_end_time = models.TimeField(default='23:59:59')
+    booking_event_id = models.TextField(default='')
     
     def __str__(self) -> str:
         return self.booking_code

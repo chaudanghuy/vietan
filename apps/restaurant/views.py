@@ -193,7 +193,7 @@ def customer_book_process(request):
     
     restaurant = Restaurant.objects.all()[0]
     # Call Calender API
-    helpers.book_calender_api(booking_date, booking_time, duration, data.get('fullname'), data.get('phone'), total_customer, restaurant.address, special_request)
+    helpers.book_calender_api(booking, booking_date, booking_time, duration, data.get('fullname'), data.get('phone'), total_customer, restaurant.address, special_request)
     return HttpResponse('Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!', status=201)
 
 # Admin
@@ -257,7 +257,7 @@ def admin_booking_tables(request):
             'total_customers': booking.number_of_guests,
             'table': booking.table.table_number,
             'booking_code': booking.booking_code,
-            'booking_ids': booking.id,
+            'booking_ids': f'{booking.table.table_number}|{booking.id}',
             'booking_phone': f'{booking.table.table_number}-{booking.customer.phone}',
             'number_of_guests': f'{booking.table.table_number}-{booking.number_of_guests}',
             'booking_name': f'{booking.table.table_number}-{booking.customer.user.email}'            
@@ -290,9 +290,7 @@ def admin_booking_tables(request):
         table_book_total_guests = [slot['number_of_guests'] for slot in booked_time_slots if
                                    slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]         
         table_book_name = [slot['booking_name'] for slot in booked_time_slots if
-                           slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]  
-    
-        print(table_book_phones)
+                           slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]
                     
         if not slot_already_booked:
             available_time_slots.append({
@@ -323,7 +321,6 @@ def admin_booking_tables(request):
     booking_date_show = booking_date.strftime('%Y-%m-%d')
     restaurant = Restaurant.objects.first()
 
-    print(available_time_slots)
     return render(request, 'admin/admin_booking_tables.html', {'available_time_slots': available_time_slots, 'tables': tables, 'date': date, 'booked_tables': booked_tables, 'booking_lists': booking_lists, 'booking_date': booking_date_show, 'restaurant': restaurant})
 
 @login_required

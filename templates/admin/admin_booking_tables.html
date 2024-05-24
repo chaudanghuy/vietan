@@ -85,12 +85,7 @@ Bookings Management
                             {{booking_time.start_time}}
                           {% endif %}>                          
                         {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}                           
-                          <h6>
-                              <a type="button" class="btn btn-info booking-modal-detail" data-booking-ids="{{booking_time.booking_ids}}">
-                                  Booking
-                              </a>
-                          </h6>
-						  {% for book_phone in booking_time.booking_phone %}
+                          {% for book_phone in booking_time.booking_phone %}
                             {% with parts=book_phone|split:"-"  %}
                               {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small id="myInput">{{parts.1}}</small>
@@ -102,6 +97,15 @@ Bookings Management
                             {% with parts=book_email|split:"-"  %}                              
                               {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small>{{parts.1}}</small>
+                                {% for booking_id in booking_time.booking_ids %}
+                                    {% with b_parts=booking_id|split:"|"  %}
+                                      {% if b_parts.0 == table.table_number|stringformat:"i" %}
+                                        <a class="booking-modal-detail" data-booking-id="{{b_parts.1}}">
+                                          <i class="fa-solid fa-calendar-days"></i>
+                                        </a>
+                                      {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
                               {% endif %}                              
                             {% endwith %}                            
                           {% endfor %}                                                      
@@ -144,7 +148,7 @@ Bookings Management
       <div class="modal-body admin-booking-body">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="admin-update-booking" type="button" class="btn btn-success" data-dismiss="modal">Update</button>
         <button id="admin-cancel-booking" type="button" class="btn btn-danger">Cancel Booking</button>
       </div>
     </div>

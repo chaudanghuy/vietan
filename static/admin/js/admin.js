@@ -219,44 +219,71 @@ $('.show-booking-detail').click(function() {
 })
 
 $('.booking-modal-detail').on('click', function() {
-    var data_booking_ids = $(this).data('booking-ids');
-
-    var array = JSON.parse(data_booking_ids.replace(/'/g, '"'));
-    var booking_ids = '';
-
+    var data_booking_id = $(this).data('booking-id');
 
     var table = '';
-    $.each(array, function(index, item) {
-        booking_ids += item + ','
-        $.ajax({
-            url: '/api/bookings?booking_id=' + item,
+    $.ajax({
+            url: '/api/bookings?booking_id=' + data_booking_id,
             type: 'GET',
             success: function(response) {
                 var html = ''
                 html += 'Booking <code>#' + response.id + '</code>'
+                html += '<input type="hidden" name="booking-event-id" value="'+response.booking_event_id+'"/>'
                 html += '<table class="table table-bordered">'
-                html += '<tr><td>Number of people</td><td>' + response.total_people + '</td></tr>'
-                html += '<tr><td>Date</td><td>' + response.booking_date + '</td></tr>'
-                html += '<tr><td>Time</td><td>' + response.booking_time + '</td></tr>'
-                html += '<tr><td>Customer</td><td>' + response.customer_name + '</td></tr>'
-                html += '<tr><td>Phone</td><td>' + response.customer_phone + '</td></tr>'
-                html += '<tr><td>Email</td><td>' + response.customer_email + '</td></tr>'
+                html += '<tr><td>Number of people</td><td><input class="form-control" type="number" name="booking-modal-total" value="' + response.total_people + '"/></td></tr>'
+                html += '<tr><td>Date</td><td><input class="form-control"  type="date" name="booking-modal-date" value="' + response.booking_date + '"/></td></tr>'
+                html += '<tr><td>Time</td><td><input class="form-control"  type="time" name="booking-modal-time" value="' + response.booking_time + '" min="17:00" max="22:00" /></td></tr>'
+                html += '<tr><td>Customer</td><td><input class="form-control"  type="text" name="booking-modal-customer" value="' + response.customer_name + '"/></td></tr>'
+                html += '<tr><td>Phone</td><td><input class="form-control"  type="text" name="booking-modal-customer-phone" value="' + response.customer_phone + '"/></td></tr>'
+                html += '<tr><td>Email</td><td><input class="form-control"  type="text" name="booking-modal-customer-email" value="' + response.customer_email + '"/></td></tr>'
                 html += '</table>'
                 table += html
 
                 $('.admin-booking-body').html(table);
+
+                $('#adminBookingModal').modal('show');
             }
         });
+
+    $('#admin-update-booking').on('click', function() {
+        $(this).prop('disabled', true);
+        $.ajax({
+            url: '/api/book-table',
+            method: 'POST',
+            data: {
+                data_booking_id: data_booking_id,
+                is_updated: 1,
+                booking_date: $('[name=booking-modal-date]').val(),
+                booking_time: $('[name=booking-modal-time]').val(),
+                total_customer: $('[name=booking-modal-total]').val(),
+                fullname: $('[name=booking-modal-customer]').val(),
+                phone: $('[name=booking-modal-customer-phone]').val(),
+                email: $('[name=booking-modal-customer-email]').val(),
+                csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                $('#adminBookingModal').modal('hide');
+                alert('Booking updated successfully')
+                window.location.reload();;
+            },
+            error: function(xhr, status, error) {
+                alert(xhr.responseText);
+            }
+        })
     })
 
-    $('#adminBookingModal').modal('show');
-
     $('#admin-cancel-booking').on('click', function() {
+        $(this).prop('disabled', true);
+        var confirm = window.confirm("Are you sure you want to cancel this booking?")
+        if (confirm == false) {
+            return;
+        }
         $.ajax({
             url: '/api/cancel-booking',
             method: 'POST',
             data: {
-                booking_ids: booking_ids,
+                data_booking_id: data_booking_id,
+                booking_event: $('[name=booking-event-id]').val(),
                 csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
             },
             success: function(response) {

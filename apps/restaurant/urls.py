@@ -11,7 +11,7 @@ urlpatterns = [
     path('', views.customer_index, name='home'),
     path('book', views.customer_book, name='book'),
     path('book-table', views.customer_book_process, name='book-table'),
-    path('gallery', views.customer_gallery, name='gallery'),    
+    path('gallery', views.customer_gallery, name='gallery'),
     path('order', views.customer_order, name='order-online'),
     path('order-book', views.customer_order_book, name='order-book'),
     path('order-confirm', views.customer_order_confirm, name='order-confirm'),
@@ -21,7 +21,7 @@ urlpatterns = [
     path('accounts/', RedirectView.as_view(url='/accounts/login'), name='manage'),
     path('accounts/login/', views.admin_login, name='login'),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
-    
+
     # Api
     path('api/check-available-time-slots', apis.check_available_time_slots, name='check-available-time-slots'),
     path('api/book-table', apis.book_table, name='book-api'),
@@ -30,19 +30,19 @@ urlpatterns = [
     path('api/bookings', apis.get_bookings, name='bookings'),
     path('api/toggle-availability', apis.toggle_booking_status, name='toggle-availability'),
     path('api/cancel-booking', apis.delete_bookings, name='cancel-booking'),
-    
+
     # Test
     # path('create-test-user', tests.create_test_user, name='create-test-user'),
     # path('dummy-test', tests.dummy_booking, name='dummy-test'),     
-    
+
     # accounts
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', views.admin_profile, name='profile'),
     path('accounts/calendar', views.admin_booking_tables, name='calendar'),
-    path('accounts/settings/', views.admin_setting, name='setting'),    
+    path('accounts/settings/', views.admin_setting, name='setting'),
     path('accounts/menu', views.admin_menu, name='menu'),
     path('accounts/menu-add', views.admin_menu_add, name='menu-add'),
     path('accounts/bookings', views.admin_bookings, name='bookings'),
-    
+
     # path('delete-booking/<str:booking_id>', views.delete_booking, name='delete-booking'),
 ]

@@ -130,8 +130,6 @@ $('#sendMessage').on('click', function(e) {
 });
 
 $('#booking-btn').on('click', function(e) {
-    var bookingButton = $(this);
-    bookingButton.prop('disabled', true);
     e.preventDefault();
     var fullname = $('input[name=fullname]').val().trim();
     if (fullname === '') {
@@ -183,6 +181,9 @@ $('#booking-btn').on('click', function(e) {
     if (special_requests === '') {
         special_requests = "None";
     }
+
+    var bookingButton = $(this);
+    bookingButton.prop('disabled', true);
 
     $('.loading').show();
     $.ajax({
@@ -395,6 +396,7 @@ $('#order-finish').on('click', function(e) {
     }
 
     $('.loading').show();
+    $(this).prop('disabled', true);
 
     $.ajax({
         url: '/api/order',

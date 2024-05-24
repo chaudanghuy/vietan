@@ -10,57 +10,66 @@ import uuid
 import json
 from datetime import datetime as dt, timedelta
 
+
 # API
 @require_POST
 def book_table(request):
     if request.method == 'POST':
-        data = request.POST 
+        data = request.POST
         booking_date = data.get('booking_date')
         booking_time = data.get('booking_time')
         total_customer = int(data.get('total_customer'))
         special_request = data.get('special_requests')
+        is_updated = int(data.get('is_updated'))
+        data_booking_id = data.get('data_booking_id')
         duration = 90 if total_customer <= 4 else (105 if total_customer <= 6 else 120)
         tables_required = total_customer // 7 + (1 if total_customer % 7 != 0 else 0)
-        
+
         try:
             booking_datetime = datetime.strptime(booking_date + ' ' + booking_time, '%Y-%m-%d %H:%M')
         except ValueError:
-            return JsonResponse('Invalid booking date or time.', status=400, safe=False)        
-        
+            return JsonResponse('Invalid booking date or time.', status=400, safe=False)
+
         end_time_check = (booking_datetime + timedelta(minutes=duration)).strftime('%H:%M')
         if booking_datetime.hour >= 22:
-            return JsonResponse('We are fully booked at this time', status=400, safe=False)        
-        
+            return JsonResponse('We are fully booked at this time', status=400, safe=False)
+
         # Get all bookings for the given date
         bookings = Booking.objects.filter(
             booking_date=booking_date
         ).exclude(customer__address__icontains='pickup-order')
-        
+
         bookings_in_slot = []
         for booking in bookings:
             start_time_booking = booking.booking_time
-            end_time_booking = (datetime.strptime(booking.booking_time, '%H:%M') + timedelta(minutes=booking.duration)).strftime('%H:%M')
-            
+            end_time_booking = (datetime.strptime(booking.booking_time, '%H:%M') + timedelta(
+                minutes=booking.duration)).strftime('%H:%M')
+
             end_time = (booking_datetime + timedelta(minutes=duration)).strftime('%H:%M')
             if start_time_booking <= booking_time <= end_time_booking:
-                bookings_in_slot.append(booking)   
+                bookings_in_slot.append(booking)
             elif booking_time <= start_time_booking <= end_time:
-                bookings_in_slot.append(booking)                                    
-                
+                bookings_in_slot.append(booking)
+
         # Remove hardcoded
         if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE):
             return JsonResponse('We are fully booked at this time.', status=400, safe=False)
-        
+
         available_tables = MyTable.objects.filter(
             status=Status.AVAILABLE,
-            capacity__gte=total_customer//tables_required
+            capacity__gte=total_customer // tables_required
         ).exclude(
             id__in=[booking.table.id for booking in bookings_in_slot]
-        ).distinct()            
-        
+        ).distinct()
+
         if len(available_tables) < tables_required:
-            return JsonResponse('We are fully booked at this time', status=400, safe=False)                          
-        
+            return JsonResponse('We are fully booked at this time', status=400, safe=False)
+
+        if is_updated == 1:
+            booking = Booking.objects.get(id=data_booking_id)
+            helpers.delete_calender_api(booking.booking_event_id)
+            booking.delete()
+
         # Create user
         current_user = User.objects.filter(username=data.get('email')).first()
         if current_user is None:
@@ -69,14 +78,14 @@ def book_table(request):
                 username=data.get('email'),
                 email=data.get('email'),
                 password='123'
-            )                   
+            )
         else:
             current_user.fullname = data.get('fullname')
             current_user.username = data.get('email')
             current_user.email = data.get('email')
             current_user.save()
-        
-        customer = Customer.objects.filter(user=current_user).first() 
+
+        customer = Customer.objects.filter(user=current_user).first()
         if customer is None:
             customer = Customer.objects.create(
                 user=current_user,
@@ -86,11 +95,11 @@ def book_table(request):
         else:
             customer.address = data.get('email')
             customer.phone = data.get('phone')
-            customer.save()        
-        
+            customer.save()
+
         booking_code = uuid.uuid4()
         for i in range(tables_required):
-            table = available_tables[i]        
+            table = available_tables[i]
             booking = Booking.objects.create(
                 customer=customer,
                 table=table,
@@ -99,27 +108,33 @@ def book_table(request):
                 booking_code=booking_code,
                 duration=duration,
                 number_of_guests=total_customer,
-                special_requests=data.get('special_requests'),
-            ) 
-    
-    restaurant = Restaurant.objects.all()[0]
-    # Call Calender API
-    helpers.book_calender_api(booking_date, booking_time, duration, data.get('fullname'), data.get('phone'), total_customer, restaurant.address, special_request)
-    
-    # Send Email
-    helpers.send_email(data.get('fullname'), total_customer, booking_date, booking_time, data.get('phone'), data.get('email'))  
+                special_requests=data.get('special_requests')
+            )
 
-    return JsonResponse({
-        'message': 'Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!',
-        'booking_datetime': booking_datetime.strftime('%Y-%m-%d %H:%M'),
-        'booking_enddattime': (booking_datetime + timedelta(minutes=duration)).strftime('%Y-%m-%d %H:%M'),
-        'booking_reference': booking_code,
-        'booking_date': booking_date,
-        'booking_time': booking_time,
-        'num_guests': total_customer,
-        'special_requests': special_request,
-        'reply_to': data.get('email'),
-    }, status=200, safe=False)
+        restaurant = Restaurant.objects.all()[0]
+        # Call Calender API
+        helpers.book_calender_api(booking, booking_date, booking_time, duration, data.get('fullname'),
+                                      data.get('phone'),
+                                      total_customer, restaurant.address, special_request)
+
+
+        # Send Email
+        helpers.send_email(data.get('fullname'), total_customer, booking_date, booking_time, data.get('phone'),
+                           data.get('email'))
+
+        return JsonResponse({
+            'message': 'Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!',
+            'booking_datetime': booking_datetime.strftime('%Y-%m-%d %H:%M'),
+            'booking_enddattime': (booking_datetime + timedelta(minutes=duration)).strftime('%Y-%m-%d %H:%M'),
+            'booking_reference': booking_code,
+            'booking_date': booking_date,
+            'booking_time': booking_time,
+            'num_guests': total_customer,
+            'special_requests': special_request,
+            'reply_to': data.get('email'),
+        }, status=200, safe=False)
+
+    return JsonResponse({'message': 'An error has occured'}, 400)
 
 
 @require_GET
@@ -154,12 +169,14 @@ def check_available_time_slots(request):
             'start_time': start_time,  # Format time in AM/PM
             'end_time': end_time.strftime('%H:%M'),
             'total_customers': booking.number_of_guests
-        })    
+        })
 
-    # Generate a list of available time slots based on total people
+        # Generate a list of available time slots based on total people
     available_time_slots = []
-    current_time = datetime(booking_date.year, booking_date.month, booking_date.day, 8, 0)  # Assuming restaurant opens at 8:00 AM
-    closing_time = datetime(booking_date.year, booking_date.month, booking_date.day, 22, 0)  # Assuming restaurant closes at 10:00 PM
+    current_time = datetime(booking_date.year, booking_date.month, booking_date.day, 8,
+                            0)  # Assuming restaurant opens at 8:00 AM
+    closing_time = datetime(booking_date.year, booking_date.month, booking_date.day, 22,
+                            0)  # Assuming restaurant closes at 10:00 PM
 
     while current_time < closing_time:
         slot_start_time = current_time
@@ -168,7 +185,7 @@ def check_available_time_slots(request):
             slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']
             for slot in booked_time_slots
         )
-        
+
         if not slot_already_booked:
             available_time_slots.append({
                 'start_time': slot_start_time.strftime('%H:%M'),
@@ -186,7 +203,7 @@ def edit_food(request):
     if request.method == 'POST':
         food_id = request.POST.get('food_id')
         name = request.POST.get('name')
-        price = request.POST.get('price')        
+        price = request.POST.get('price')
         category_id = request.POST.get('category')
         if category_id:
             category = Category.objects.get(pk=category_id)
@@ -201,7 +218,7 @@ def edit_food(request):
             food = Food.objects.get(pk=food_id)
         else:
             food = Food()
-        
+
         food.name = name
         food.price = price
         food.category = category
@@ -209,7 +226,7 @@ def edit_food(request):
         if is_available == 'true':
             food.availability = "available"
         else:
-            food.availability = "unavailable"        
+            food.availability = "unavailable"
 
         if image:
             food.image = image
@@ -220,21 +237,25 @@ def edit_food(request):
     else:
         return JsonResponse({'message': 'Invalid request.'}, status=400)
 
+
 @require_GET
 def get_calendar_events(request):
-    bookings = Booking.objects.filter(customer__address__icontains='pickup-order')     
+    bookings = Booking.objects.filter(customer__address__icontains='pickup-order')
     events = [{
         'start': f"{booking.booking_date} {booking.booking_time}",
         'end': booking.duration,
         'title': booking.customer.user.fullname,
-        'description': 'Number of guests: ' + str(booking.number_of_guests) + '\r' + 'Phone: ' + str(booking.customer.phone) + '\r' + 'Email: ' + str(booking.customer.user.email) + '\n' + 'Special requests: ' + booking.special_requests
+        'description': 'Number of guests: ' + str(booking.number_of_guests) + '\r' + 'Phone: ' + str(
+            booking.customer.phone) + '\r' + 'Email: ' + str(
+            booking.customer.user.email) + '\n' + 'Special requests: ' + booking.special_requests
     } for booking in bookings]
-    
+
     return JsonResponse({'events': events})
+
 
 @require_POST
 def order(request):
-    if request.method == 'POST':    
+    if request.method == 'POST':
         basket = request.POST.get('basket')
         date = request.POST.get('date')
         time = request.POST.get('time')
@@ -242,13 +263,13 @@ def order(request):
         phone = request.POST.get('phone')
         address = request.POST.get('address')
         special_requests = request.POST.get('special_requests')
-        
+
         if date is None:
             date = dt.today().strftime('%Y-%m-%d')
-            
+
         if address is None:
             address = 'pickup-order'
-        
+
         booking_details = json.loads(basket)
         total_price = 0
         for basket_id, details in booking_details.items():
@@ -256,12 +277,12 @@ def order(request):
             total_price += food.price * details['total']
 
         user = User.objects.filter(username=email).first()
-        if user is None:            
-            user = User.objects.create(username=email , password='123', email=email)
-            
+        if user is None:
+            user = User.objects.create(username=email, password='123', email=email)
+
         customer = Customer.objects.get_or_create(user=user, address=address, phone=phone)[0]
-        
-        booking_time = (datetime.strptime(time, '%H:%M') + timedelta(minutes=30)).strftime('%H:%M')        
+
+        booking_time = (datetime.strptime(time, '%H:%M') + timedelta(minutes=30)).strftime('%H:%M')
 
         booking = Booking.objects.create(
             customer=customer,
@@ -269,8 +290,8 @@ def order(request):
             booking_date=date,
             booking_time=time,
             duration=30,
-            number_of_guests=1, 
-            booking_status='Pending',            
+            number_of_guests=1,
+            booking_status='Pending',
             special_requests=special_requests,
             total_price=total_price
         )
@@ -291,24 +312,27 @@ def order(request):
 
         # Call Calender API
         restaurant = Restaurant.objects.first()
-        helpers.order_calender_api(date, booking_time, 30, email, phone, 1, restaurant.address, booking_detail_html, total_price_html, special_requests)
+        helpers.order_calender_api(date, booking_time, 30, email, phone, 1, restaurant.address, booking_detail_html,
+                                   total_price_html, special_requests)
 
         return JsonResponse({'message': 'Booking ordered successfully.', 'booking_time': booking_time})
     else:
         return JsonResponse({'message': 'Invalid request.'}, status=400)
 
+
 @require_GET
 def get_bookings(request):
     booking_id = request.GET.get('booking_id')
-    
+
     if booking_id:
-        booking = Booking.objects.get(pk=booking_id)
-        
+        booking = Booking.objects.get(id=booking_id)
+
         booking_details = BookingDetail.objects.filter(booking=booking)
         customer = booking.customer
-        
+
         booking_data = {
             'id': booking.id,
+            'booking_event_id': booking.booking_event_id,
             'customer_name': customer.user.fullname,
             'total_people': booking.number_of_guests,
             'customer_email': customer.user.email,
@@ -326,7 +350,7 @@ def get_bookings(request):
                 'quantity': booking_detail.quantity
             } for booking_detail in booking_details]
         }
-        
+
         return JsonResponse(booking_data)
     else:
         return JsonResponse({'message': 'Invalid request.'}, status=400)
@@ -343,10 +367,10 @@ def add_to_cart(request):
             cart[food_id] = quantity
         else:
             cart[food_id] = quantity
-        request.session[settings.CART_SESSION_ID] = cart 
+        request.session[settings.CART_SESSION_ID] = cart
         return JsonResponse({'message': 'Food added to cart.', 'cart': cart})
     return JsonResponse({'message': 'Invalid request.'}, status=400)
-            
+
 
 @require_POST
 def remote_from_cart(request, food_id):
@@ -355,11 +379,12 @@ def remote_from_cart(request, food_id):
         del cart[food_id]
     request.session[settings.CART_SESSION_ID] = cart
     return JsonResponse({'message': 'Food removed from cart.', 'cart': cart})
-    
-    
+
+
 @require_GET
 def cart_detail(request):
     return request.session.get(settings.CART_SESSION_ID, {})
+
 
 @require_POST
 def toggle_booking_status(request):
@@ -368,18 +393,21 @@ def toggle_booking_status(request):
         restaurant = Restaurant.objects.first()
         restaurant.booking_enabled = (status == 'true')
         restaurant.save()
-        return JsonResponse({'message': 'Booking status toggled successfully.', 'booking_status': restaurant.booking_enabled})
+        return JsonResponse(
+            {'message': 'Booking status toggled successfully.', 'booking_status': restaurant.booking_enabled})
     return JsonResponse({'message': 'Invalid request.'}, status=400)
+
 
 @require_POST
 def delete_bookings(request):
     if request.method == 'POST':
-        booking_ids = request.POST.get('booking_ids')
-        booking_ids = booking_ids.split(',')
-        for booking_id in booking_ids:
-            try:
-                booking = Booking.objects.get(pk=booking_id)    
-                booking.delete()
-            except:
-                booking = None
-        return JsonResponse({'message': 'Bookings deleted successfully.'})    
+        booking_id = request.POST.get('data_booking_id')
+        booking_event = request.POST.get('booking_event')
+        try:
+            helpers.delete_calender_api(booking_event)
+            booking = Booking.objects.get(id=booking_id)
+            booking.delete()
+        except:
+            booking = None
+        return JsonResponse({'message': 'Bookings deleted successfully.'})
+    return JsonResponse({'message': 'An error has occured'}, 400)
