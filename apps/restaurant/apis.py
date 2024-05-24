@@ -20,7 +20,7 @@ def book_table(request):
         booking_time = data.get('booking_time')
         total_customer = int(data.get('total_customer'))
         special_request = data.get('special_requests')
-        is_updated = int(data.get('is_updated'))
+        is_updated = data.get('is_updated')
         data_booking_id = data.get('data_booking_id')
         duration = 90 if total_customer <= 4 else (105 if total_customer <= 6 else 120)
         tables_required = total_customer // 7 + (1 if total_customer % 7 != 0 else 0)
@@ -65,6 +65,8 @@ def book_table(request):
         if len(available_tables) < tables_required:
             return JsonResponse('We are fully booked at this time', status=400, safe=False)
 
+        if is_updated:
+            is_updated = int(is_updated)
         if is_updated == 1:
             booking = Booking.objects.get(id=data_booking_id)
             helpers.delete_calender_api(booking.booking_event_id)
