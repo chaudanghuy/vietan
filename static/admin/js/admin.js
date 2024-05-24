@@ -263,8 +263,7 @@ $('.booking-modal-detail').on('click', function() {
             },
             success: function(response) {
                 $('#adminBookingModal').modal('hide');
-                alert('Booking updated successfully')
-                window.location.reload();;
+                window.location.reload();
             },
             error: function(xhr, status, error) {
                 alert(xhr.responseText);
@@ -288,7 +287,6 @@ $('.booking-modal-detail').on('click', function() {
             },
             success: function(response) {
                 $('#adminBookingModal').modal('hide');
-                alert('Booking cancelled successfully')
                 window.location.reload();;
             }
         })
