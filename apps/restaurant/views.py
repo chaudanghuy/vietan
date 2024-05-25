@@ -383,7 +383,6 @@ def admin_menu(request):
         return render(request, 'admin/admin_menu.html', {'categories': categories, 'foods': foods, 'transalations': transalations})
 
 @login_required
-@csrf_exempt
 def admin_menu_add(request):
     categories = Category.objects.all()    
     transalations = Translation.objects.all()
@@ -403,11 +402,11 @@ def admin_menu_add(request):
         form.initial['translation_id'] = default_translation_id
         
         if form.is_valid():
-            food = form.save()
+            food = form.save(commit=False)
             if upload_data:
                 food.image = upload_data.get('url')
                 food.save()
-            return redirect('menu')
+            return JsonResponse({'message': 'Add food success'})
     else:
         form = FoodForm()
     return render(request, 'admin/admin_menu_add.html', {'form': form, 'categories': categories, 'transalations': transalations})

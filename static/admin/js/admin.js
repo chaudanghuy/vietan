@@ -46,6 +46,7 @@ $(document).ready(function() {
 
     // Clicking edit-food-btn will send POST request to edit food with image, name, price
     $('#edit-food-btn').click(function() {
+        $(this).prop('disabled', true);
         let formData = new FormData()
         let imageFile = $('#food-edit-upload')[0].files[0]
         let name = $('#name').val()
@@ -86,14 +87,18 @@ $(document).ready(function() {
         })
     })
 
-    $('#add-food-btn').click(function() {
+    $('#add-food-btn').click(function(e) {
+        $(this).prop('disabled', true);
+        e.preventDefault();
         let formData = new FormData()
         let imageFile = $('#food-edit-upload')[0].files[0]
+        let translation = $('#translation_id').val()
         let name = $('#name').val()
         let price = $('input[name="price"]').val()
         let category = $('#category').val()
         let description = $('#foodDescription').val()
         let availability = $('#is_availabe').is(':checked') ? 'available' : 'unavailable'
+        let show_image =  $('#show_image').is(':checked') ? '1' : '0'
 
         if (imageFile) {
             formData.append('image', imageFile)
@@ -101,8 +106,11 @@ $(document).ready(function() {
         formData.append('name', name)
         formData.append('price', price)
         formData.append('category', category)
+        formData.append('translation_id', translation)
         formData.append('description', description)
-        formData.append('is_available', availability)
+        formData.append('availability', availability)
+        formData.append('show_image', show_image)
+        formData.append('csrfmiddlewaretoken', $('[name=csrfmiddlewaretoken]').val())
 
         $.ajax({
             url: '/accounts/menu-add',
@@ -111,7 +119,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(response) {
-                // window.location.href = '/accounts/menu'
+                window.location.href = '/accounts/menu'
             },
             error: function(xhr, status, error) {
                 console.error(xhr.responseText) // Log any errors to the console
