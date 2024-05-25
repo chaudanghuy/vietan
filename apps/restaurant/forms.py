@@ -4,4 +4,4 @@ from .models import Food
 class FoodForm(forms.ModelForm):
   class Meta:
         model = Food
-        fields = ['category','name', 'description', 'price', 'image', 'availability', 'translation_id']
+        fields = ['category','name', 'description', 'price', 'image', 'availability', 'translation_id', 'show_image']

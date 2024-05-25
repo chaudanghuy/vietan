@@ -42,8 +42,8 @@
                                                                     {% for food in foods %} {% if food.category_id == categories.0.id %}
                                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                                         <div class="col-md-2 col-lg-2 col-xl-2">
-                                                                            <a href="{{food.image}}" data-lightbox="image-set" data-title="{{food.name}}">
-                                                                                <img src="{{food.image}}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
+                                                                            <a href="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" data-lightbox="image-set" data-title="{{food.name}}">
+                                                                                <img src="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
                                                                             </a>
                                                                         </div>
                                                                         <div class="col-md-3 col-lg-3 col-xl-3">
@@ -99,8 +99,8 @@
                                                                     {% for food in foods %} {% if food.category_id == categories.1.id %}
                                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                                         <div class="col-md-2 col-lg-2 col-xl-2">
-                                                                            <a href="{{food.image}}" data-lightbox="image-set" data-title="{{food.name}}">
-                                                                                <img src="{{food.image}}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
+                                                                            <a href="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" data-lightbox="image-set" data-title="{{food.name}}">
+                                                                                <img src="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
                                                                             </a>
                                                                         </div>
                                                                         <div class="col-md-3 col-lg-3 col-xl-3">
@@ -157,8 +157,8 @@
                                                                     {% for food in foods %} {% if food.category_id == categories.2.id %}
                                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                                         <div class="col-md-2 col-lg-2 col-xl-2">
-                                                                            <a href="{{food.image}}" data-lightbox="image-set" data-title="{{food.name}}">
-                                                                                <img src="{{food.image}}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
+                                                                            <a href="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" data-lightbox="image-set" data-title="{{food.name}}">
+                                                                                <img src="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" class="rounded-circle" alt="{{food.name}}" style="width: 80px; height: 80px;">
                                                                             </a>
                                                                         </div>
                                                                         <div class="col-md-3 col-lg-3 col-xl-3">

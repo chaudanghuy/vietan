@@ -120,8 +120,8 @@
             <div class="row menu-container" data-aos="fade-up" data-aos-delay="200">
                 {% for food in foods %}
                 <div class="col-lg-6 menu-item {{food.category.filter_code}}">
-                    <a href="{{food.image}}" data-lightbox="image-set" data-title="{{food.name}}">
-                        <img src="{{food.image}}" alt="{{food.name}}" class="menu-img" alt="">
+                    <a href="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" data-lightbox="image-set" data-title="{{food.name}}">
+                        <img src="{{food.image}}" style="{% if food.show_image %} {% else %} display:none; {% endif %}" alt="{{food.name}}" class="menu-img" alt="">
                     </a>
                     <div class="menu-content">
                         <a href="#">{{food.name}}</a><span>{{food.price}}</span>

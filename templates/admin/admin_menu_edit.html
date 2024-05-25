@@ -96,14 +96,24 @@
                             <label class="col-sm-12 col-md-2 col-form-label">Is Availability</label>
                             <div class="col-sm-12 col-md-10">
                                 <div class="custom-control custom-checkbox mb-5">
-                                    <input type="checkbox" class="custom-control-input" id="is_availabe" name="availability" value="available" {% if food.availability == 'available' %} checked {% endif %}>
+                                    <input type="checkbox" class="custom-control-input" id="is_availabe" name="availability" value="{{food.availability}}" {% if food.availability == 'available' %} checked {% endif %}>
                                     <label class="custom-control-label" for="is_availabe">Check to make it show</label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Show Image</label>
+                            <input type="hidden" name="show_image" class="show_image" value="1"/>
+                            <div class="col-sm-12 col-md-10">
+                                <div class="custom-control custom-checkbox mb-5">
+                                    <input type="checkbox" class="custom-control-input" id="show_image" name="show_image" value="{{food.show_image}}" {% if food.show_image %} checked {% endif %}>
+                                    <label class="custom-control-label" for="show_image">Check to make it show</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="btn-list">
-                                <button type="submit" id="edit-food-btn" class="btn btn-primary btn-lg text-center">Save</button>
+                                <button type="button" id="edit-food-btn" class="btn btn-primary btn-lg text-center">Save</button>
                             </div>
                         </div>
                     </form>

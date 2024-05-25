@@ -1,3 +1,5 @@
+var showFoodImage = 1;
+
 $(document).ready(function() {
     $('#datepicker').datepicker({
         format: 'yyyy-mm-dd',
@@ -52,6 +54,7 @@ $(document).ready(function() {
         let category = $('#category').val()
         let description = $('#foodDescription').val()
         let availability = $('#is_availabe').is(':checked') ? 'available' : 'unavailable'
+        let show_image =  $('#show_image').is(':checked') ? '1' : '0'
         let food_id = $('#food_id').val()
 
         if (imageFile) {
@@ -64,6 +67,8 @@ $(document).ready(function() {
         formData.append('translation_id', translation)
         formData.append('description', description)
         formData.append('availability', availability)
+        formData.append('show_image', show_image)
+        formData.append('csrfmiddlewaretoken', $('[name=csrfmiddlewaretoken]').val())
 
         $.ajax({
             url: '/accounts/menu?food=' + food_id,
@@ -136,6 +141,18 @@ $(document).ready(function() {
                 console.log(response)
             }
         })
+    })
+
+    $('.food-cb-value').click(function() {
+        var mainParent = $(this).parent('.toggle-btn');
+        if ($(mainParent).find('input.food-cb-value').is(':checked')) {
+            $(mainParent).addClass('active');
+            showFoodImage = 1;
+        } else {
+            $(mainParent).removeClass('active');
+            showFoodImage = 0;
+        }
+        $('.show_image').val(showFoodImage);
     })
 })
 

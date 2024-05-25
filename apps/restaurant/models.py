@@ -109,7 +109,8 @@ class Food(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = CloudinaryField('image')
-    availability = models.CharField(max_length=20, choices=Status.choices, default=Status.AVAILABLE)     
+    availability = models.CharField(max_length=20, choices=Status.choices, default=Status.AVAILABLE)
+    show_image = models.IntegerField(default=1)
     
     def __str__(self) -> str:
         return self.name
