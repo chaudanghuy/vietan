@@ -21,6 +21,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import F, Value as V
 from django.db.models.functions import Concat, Substr, StrIndex
+import cloudinary.uploader
 
 # Frontend
 def index(request):
@@ -355,7 +356,6 @@ def admin_gallery(request):
     return render(request, 'admin/admin_gallery.html')
 
 @login_required
-@csrf_exempt
 def admin_menu(request):
     categories = Category.objects.all()
     foods = Food.objects.order_by('-id')
@@ -367,7 +367,14 @@ def admin_menu(request):
             form = FoodForm(request.POST, request.FILES, instance=food)
             if form.is_valid():
                 form.save()
-        return render(request, 'admin/admin_menu_edit.html', {'categories': categories, 'food': food, 'transalations': transalations})      
+                if request.FILES['image']:
+                    file = request.FILES['image']
+                    upload_data = cloudinary.uploader.upload(file)
+                    if upload_data:
+                        food = Food.objects.get(id=food_id)
+                        food.image = upload_data.get('url')
+                        food.save()
+        return render(request, 'admin/admin_menu_edit.html', {'categories': categories, 'food': food, 'transalations': transalations})
     else:
         return render(request, 'admin/admin_menu.html', {'categories': categories, 'foods': foods, 'transalations': transalations})
 
@@ -385,7 +392,13 @@ def admin_menu_add(request):
         form.initial['translation_id'] = default_translation_id
         
         if form.is_valid():
-            form.save()
+            food = form.save()
+            if request.FILES['image']:
+                file = request.FILES['image']
+                upload_data = cloudinary.uploader.upload(file)
+                if upload_data:
+                    food.image = upload_data.get('url')
+                    food.save()
             return redirect('menu')
     else:
         form = FoodForm()

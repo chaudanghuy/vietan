@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import cloudinary
 
 load_dotenv()
 
@@ -36,6 +37,17 @@ MAIL_API_KEY = os.getenv("MJ_APIKEY_PUBLIC")
 MAIL_SECRET_KEY = os.getenv("MJ_APIKEY_PRIVATE")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 CC_EMAIL = os.getenv("CC_EMAIL")
+
+# CLoudinary
+CLOUDINARY_NAME = os.getenv("CLOUDINARY_NAME")
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_SECRET = os.getenv("CLOUDINARY_SECRET")
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_SECRET,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,9 +73,17 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",    
-    "apps.restaurant",    
+    "django.contrib.staticfiles",
+    "cloudinary",
+    "cloudinary_storage",
+    "apps.restaurant",
 ]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUDINARY_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_SECRET,
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -180,6 +200,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Session
 CART_SESSION_ID = 'cart'

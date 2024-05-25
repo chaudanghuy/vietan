@@ -45,24 +45,24 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Translation</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="form-control" id="translation_id" name="translation_id">                 
+                                <select class="form-control" id="translation_id" name="translation_id">
                     {% for translation in transalations %}
                       <option value="{{ translation.id }}" {% if food.translation_id == translation.id %} selected {% endif %}>
                         {{ translation.language }}
                       </option>
-                    {% endfor %}                    
+                    {% endfor %}
                   </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Category</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="form-control" id="category" name="category">                 
+                                <select class="form-control" id="category" name="category">
                     {% for category in categories %}
                       <option value="{{ category.id }}" {% if food.category.id == category.id %} selected {% endif %}>
                         {{ category.name }}
                       </option>
-                    {% endfor %}                    
+                    {% endfor %}
                   </select>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label"></label>
                             <div class="col-sm-12 col-md-10">
-                                <img id="food-edit-image" class="img-thumbnail" style="height: 150px;" src="{{ food.image.url }}" />
+                                <img id="food-edit-image" class="img-thumbnail" style="height: 150px;" src="{{ food.image }}" />
                             </div>
                         </div>
                         <div class="form-group row">

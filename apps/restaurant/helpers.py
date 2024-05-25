@@ -176,4 +176,4 @@ def get_day_suffix(day):
         return 'nd'
     if day % 10 == 3:
         return 'rd'
-    return 'th'    
+    return 'th'
