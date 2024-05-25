@@ -365,9 +365,12 @@ def admin_menu(request):
         food = Food.objects.get(id=food_id)
         if request.method == 'POST':
             upload_data = None
-            if request.FILES['image']:
-                file = request.FILES['image']
-                upload_data = cloudinary.uploader.upload(file)
+            try:
+                if request.FILES['image']:
+                    file = request.FILES['image']
+                    upload_data = cloudinary.uploader.upload(file)
+            except:
+                upload_data = None
             form = FoodForm(request.POST, request.FILES, instance=food)
             if form.is_valid():
                 form.save()
@@ -386,9 +389,12 @@ def admin_menu_add(request):
     transalations = Translation.objects.all()
     if request.method == 'POST':
         upload_data = None
-        if request.FILES['image']:
-            file = request.FILES['image']
-            upload_data = cloudinary.uploader.upload(file)
+        try:
+            if request.FILES['image']:
+                file = request.FILES['image']
+                upload_data = cloudinary.uploader.upload(file)
+        except:
+            upload_data = None
         form = FoodForm(request.POST, request.FILES)
         if 'en' in [t.language for t in transalations]:
             default_translation_id = [t.id for t in transalations if t.language=='en'][0]
