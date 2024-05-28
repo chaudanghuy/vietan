@@ -255,12 +255,13 @@ $('.booking-modal-detail').on('click', function() {
                 html += 'Booking <code>#' + response.id + '</code>'
                 html += '<input type="hidden" name="booking-event-id" value="'+response.booking_event_id+'"/>'
                 html += '<table class="table table-bordered">'
-                html += '<tr><td>Number of people <i class="fa-solid fa-user-plus"></i></td><td><input class="form-control" type="number" name="booking-modal-total" value="' + response.total_people + '"/></td></tr>'
+                html += '<tr><td>Number of people <i class="fa-solid fa-user-plus"></i></td><td><input class="form-control" type="number" name="booking-modal-total" value="' + response.total_people + '" disabled/></td></tr>'
                 html += '<tr><td>Date</td><td><input class="form-control"  type="date" name="booking-modal-date" value="' + response.booking_date + '"/></td></tr>'
                 html += '<tr><td>Time</td><td><input class="form-control"  type="time" name="booking-modal-time" value="' + response.booking_time + '" min="17:00" max="22:00" /></td></tr>'
-                html += '<tr><td><i class="fa-regular fa-circle-user"></i> Customer</td><td><input class="form-control"  type="text" name="booking-modal-customer" value="' + response.customer_name + '"/></td></tr>'
-                html += '<tr><td><i class="fa-solid fa-phone"></i> Phone</td><td><input class="form-control"  type="text" name="booking-modal-customer-phone" value="' + response.customer_phone + '"/></td></tr>'
-                html += '<tr><td><i class="fa-regular fa-envelope"></i> Email</td><td><input class="form-control"  type="text" name="booking-modal-customer-email" value="' + response.customer_email + '"/></td></tr>'
+                html += '<tr><td><i class="fa-regular fa-clock"></i> Duration (minute)</td><td><input class="form-control"  type="number" name="booking-modal-duration" value="' + response.duration + '" min="0" /></td></tr>'
+                html += '<tr><td><i class="fa-regular fa-circle-user"></i> Customer</td><td><input class="form-control"  type="text" name="booking-modal-customer" value="' + response.customer_name + '" disabled/></td></tr>'
+                html += '<tr><td><i class="fa-solid fa-phone"></i> Phone</td><td><input class="form-control"  type="text" name="booking-modal-customer-phone" value="' + response.customer_phone + '" disabled/></td></tr>'
+                html += '<tr><td><i class="fa-regular fa-envelope"></i> Email</td><td><input class="form-control"  type="text" name="booking-modal-customer-email" value="' + response.customer_email + '" disabled/></td></tr>'
                 html += '</table>'
                 table += html
 
@@ -280,6 +281,7 @@ $('.booking-modal-detail').on('click', function() {
                 is_updated: 1,
                 booking_date: $('[name=booking-modal-date]').val(),
                 booking_time: $('[name=booking-modal-time]').val(),
+                booking_duration: $('[name=booking-modal-duration]').val(),
                 total_customer: $('[name=booking-modal-total]').val(),
                 fullname: $('[name=booking-modal-customer]').val(),
                 phone: $('[name=booking-modal-customer-phone]').val(),
@@ -318,7 +320,8 @@ $('.booking-modal-detail').on('click', function() {
     })
 });
 
-$('#add-booking-modal').on('click', function() {
+$('#add-booking-modal').on('click', function(e) {
+     e.preventDefault();
      var html = ''
      html += '<table class="table table-bordered">'
      html += '<tr><td><i class="fa-solid fa-user-plus"></i> Number of people</td><td><input class="form-control" type="number" name="booking-modal-add-total" value=""/></td></tr>'
