@@ -23,7 +23,7 @@ $(function() {
 
     $('#timePicker').timepicker({
         timeFormat: 'H:mm',
-        interval: 30,
+        interval: 15,
         minTime: '17:00',
         maxTime: '22:00',
         defaultTime: '17:00',

@@ -1,21 +1,21 @@
 <!-- profile.html -->
-{% extends 'admin.html' %} 
+{% extends 'admin.html' %}
 
-{% load static %} 
+{% load static %}
 
-{% load custom_filters %} 
+{% load custom_filters %}
 
-{% block title %} 
-Bookings Management 
-{% endblock %} 
+{% block title %}
+Bookings Management
+{% endblock %}
 
-{% block content %} 
+{% block content %}
 
-{% include '../includes/admin/loader.html' %} 
+{% include '../includes/admin/loader.html' %}
 
-{% include '../includes/admin/header.html' %} 
+{% include '../includes/admin/header.html' %}
 
-{% include '../includes/admin/layout_setting.html' %} 
+{% include '../includes/admin/layout_setting.html' %}
 
 {% include '../includes/admin/sidebar.html' %}
 <div class="mobile-menu-overlay"></div>
@@ -40,28 +40,33 @@ Bookings Management
                     </div>
 					<div class="col-md-6 col-sm-12 text-right">
                       <p>Toggle <code>OFF</code> to disable Order Online</p>
-					  {% csrf_token %}								  					  
+					  {% csrf_token %}
                       <div class="toggle-btn {% if restaurant.booking_enabled %}active{% endif %}">
 						  <input type="checkbox"  checked class="cb-value" />
 						  <span class="round-btn"></span>
 						</div>
                     </div>
                 </div>
+                <div class="col-sm-12 row text-right">
+                    <button id="add-booking-modal" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Add Booking</button>
+                </div>
             </div>
-			
+
 			<div class="card-box mb-30">
 			<!-- Bookings -->
             <div class="card-box mb-30">
-                <div class="pd-20">
-                    <div class="text-center">
-						<input id="booking_date_reload" type="date" class="form-control" value="{{ booking_date }}"/>
-					</div>
+                <div class="pd-20 row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <input id="booking_date_reload" type="date" class="form-control" value="{{ booking_date }}"/>
+                        </div>
+                    </div>
                 </div>
                 <div class="pb-20">
                     <table id="booking-table" class="table table-hover table-bordered table-responsive">
                   <tr>
                     <th class="text-center">
-                      <i class="far fa-calendar-check"></i>                      
+                      <i class="far fa-calendar-check"></i>
                     </th>
                     {% for booking_time in available_time_slots %}
                       <th>{{booking_time.start_time}}</th>
@@ -71,30 +76,30 @@ Bookings Management
                   <tr>
                     <td class="text-nowrap">Table {{ table.table_number }}</td>
                     {% for booking_time in available_time_slots %}
-                      <td style="background-color: {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}powderblue;{% endif %}" 
+                      <td style="background-color: {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}powderblue;{% endif %}"
                           data-booking-id=
-                          {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}                            
+                          {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}
                             {% for book_phone in booking_time.booking_phone %}
-                              {% with parts=book_phone|split:"-"  %}                              
-                                {% if parts.0 == table.table_number %}                                                          
+                              {% with parts=book_phone|split:"-"  %}
+                                {% if parts.0 == table.table_number %}
                                 {{parts.1}}
-                                {% endif %}                              
-                              {% endwith %}                            
-                            {% endfor %}  
+                                {% endif %}
+                              {% endwith %}
+                            {% endfor %}
                           {% else %}
                             {{booking_time.start_time}}
-                          {% endif %}>                          
-                        {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}                           
+                          {% endif %}>
+                        {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}
                           {% for book_phone in booking_time.booking_phone %}
                             {% with parts=book_phone|split:"-"  %}
                               {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small id="myInput">{{parts.1}}</small>
                               {% endif %}
-                            {% endwith %}                            
-                          {% endfor %}   
-                          -                                                                           
+                            {% endwith %}
+                          {% endfor %}
+                          -
                           {% for book_email in booking_time.table_book_name %}
-                            {% with parts=book_email|split:"-"  %}                              
+                            {% with parts=book_email|split:"-"  %}
                               {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small>{{parts.1}}</small>
                                 {% for booking_id in booking_time.booking_ids %}
@@ -106,10 +111,10 @@ Bookings Management
                                       {% endif %}
                                     {% endwith %}
                                 {% endfor %}
-                              {% endif %}                              
-                            {% endwith %}                            
-                          {% endfor %}                                                      
-                            
+                              {% endif %}
+                            {% endwith %}
+                          {% endfor %}
+
                       {% endif %}
                       </td>
                     {% endfor %}
@@ -120,16 +125,16 @@ Bookings Management
             </div>
             <!-- Bookings -->
 
-			<!-- Orders -->	
+			<!-- Orders -->
 			<div class="card-box mb-30">
 				<div class="embed-responsive embed-responsive-1by1">
 					<iframe class="embed-responsive-item" src="https://calendar.google.com/calendar/embed?src=eca7b034a71caa90eb1b328feeb53f573a07a7ad7a4d8686efd76bb5f048672e%40group.calendar.google.com&ctz=Asia%2FHo_Chi_Minh" style="border: 0" frameborder="0" scrolling="no">
-					</iframe>	
+					</iframe>
 				</div>
-			</div>	
+			</div>
 			<!-- Orders -->
-			
-			
+
+
         </div>
         {% include '../includes/admin/footer.html' %}
     </div>
@@ -148,8 +153,28 @@ Bookings Management
       <div class="modal-body admin-booking-body">
       </div>
       <div class="modal-footer">
-        <button id="admin-update-booking" type="button" class="btn btn-success" data-dismiss="modal">Update</button>
+        <button id="admin-update-booking" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa-solid fa-cloud-arrow-up"></i> Update</button>
         <button id="admin-cancel-booking" type="button" class="btn btn-danger">Cancel Booking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add Booking -->
+<div class="modal fade" id="adminAddBookingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="adminAddBookingModalTitle"><i class="fa-solid fa-plus"></i> Add Booking</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body admin-booking-add-body">
+      </div>
+      <div class="modal-footer">
+        <button id="admin-add-booking" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa-solid fa-paper-plane"></i> Create</button>
+        <button type="button" data-dismiss="modal" class="btn btn-danger">Cancel</button>
       </div>
     </div>
   </div>

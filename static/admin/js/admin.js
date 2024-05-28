@@ -255,12 +255,12 @@ $('.booking-modal-detail').on('click', function() {
                 html += 'Booking <code>#' + response.id + '</code>'
                 html += '<input type="hidden" name="booking-event-id" value="'+response.booking_event_id+'"/>'
                 html += '<table class="table table-bordered">'
-                html += '<tr><td>Number of people</td><td><input class="form-control" type="number" name="booking-modal-total" value="' + response.total_people + '"/></td></tr>'
+                html += '<tr><td>Number of people <i class="fa-solid fa-user-plus"></i></td><td><input class="form-control" type="number" name="booking-modal-total" value="' + response.total_people + '"/></td></tr>'
                 html += '<tr><td>Date</td><td><input class="form-control"  type="date" name="booking-modal-date" value="' + response.booking_date + '"/></td></tr>'
                 html += '<tr><td>Time</td><td><input class="form-control"  type="time" name="booking-modal-time" value="' + response.booking_time + '" min="17:00" max="22:00" /></td></tr>'
-                html += '<tr><td>Customer</td><td><input class="form-control"  type="text" name="booking-modal-customer" value="' + response.customer_name + '"/></td></tr>'
-                html += '<tr><td>Phone</td><td><input class="form-control"  type="text" name="booking-modal-customer-phone" value="' + response.customer_phone + '"/></td></tr>'
-                html += '<tr><td>Email</td><td><input class="form-control"  type="text" name="booking-modal-customer-email" value="' + response.customer_email + '"/></td></tr>'
+                html += '<tr><td><i class="fa-regular fa-circle-user"></i> Customer</td><td><input class="form-control"  type="text" name="booking-modal-customer" value="' + response.customer_name + '"/></td></tr>'
+                html += '<tr><td><i class="fa-solid fa-phone"></i> Phone</td><td><input class="form-control"  type="text" name="booking-modal-customer-phone" value="' + response.customer_phone + '"/></td></tr>'
+                html += '<tr><td><i class="fa-regular fa-envelope"></i> Email</td><td><input class="form-control"  type="text" name="booking-modal-customer-email" value="' + response.customer_email + '"/></td></tr>'
                 html += '</table>'
                 table += html
 
@@ -313,6 +313,45 @@ $('.booking-modal-detail').on('click', function() {
             success: function(response) {
                 $('#adminBookingModal').modal('hide');
                 window.location.reload();;
+            }
+        })
+    })
+});
+
+$('#add-booking-modal').on('click', function() {
+     var html = ''
+     html += '<table class="table table-bordered">'
+     html += '<tr><td><i class="fa-solid fa-user-plus"></i> Number of people</td><td><input class="form-control" type="number" name="booking-modal-add-total" value=""/></td></tr>'
+     html += '<tr><td>Date</td><td><input class="form-control"  type="date" name="booking-modal-add-date" value=""/></td></tr>'
+     html += '<tr><td>Time</td><td><input class="form-control"  type="time" name="booking-modal-add-time" value="" min="17:00" max="22:00" /></td></tr>'
+     html += '<tr><td><i class="fa-regular fa-circle-user"></i> Customer</td><td><input class="form-control"  type="text" name="booking-modal-add-customer" value=""/></td></tr>'
+     html += '<tr><td><i class="fa-solid fa-phone"></i> Phone</td><td><input class="form-control"  type="text" name="booking-modal-add-customer-phone" value=""/></td></tr>'
+     html += '<tr><td><i class="fa-regular fa-envelope"></i> Email</td><td><input class="form-control"  type="text" name="booking-modal-add-customer-email" value=""/></td></tr>'
+     html += '</table>'
+
+     $('.admin-booking-add-body').html(html);
+     $('#adminAddBookingModal').modal('show');
+
+    $('#admin-add-booking').on('click', function() {
+        $(this).prop('disabled', true);
+        $.ajax({
+            url: '/api/book-table',
+            method: 'POST',
+            data: {
+                booking_date: $('[name=booking-modal-add-date]').val(),
+                booking_time: $('[name=booking-modal-add-time]').val(),
+                total_customer: $('[name=booking-modal-add-total]').val(),
+                fullname: $('[name=booking-modal-add-customer]').val(),
+                phone: $('[name=booking-modal-add-customer-phone]').val(),
+                email: $('[name=booking-modal-add-customer-email]').val(),
+                csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                $('#adminAddBookingModal').modal('hide');
+                window.location.href = '/accounts/calendar?date='+ $('[name=booking-modal-add-date]').val();
+            },
+            error: function(xhr, status, error) {
+                alert(xhr.responseText);
             }
         })
     })

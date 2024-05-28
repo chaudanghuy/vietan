@@ -80,7 +80,7 @@ td:first-child {
   transition: all .30s ease-in-out;
   }
   
-  .cb-value .food-cb-value {
+  .cb-value {
     position: absolute;
     left:0;
     right:0;
