@@ -9,9 +9,9 @@
 
                 <div class="btns">
 					{% if restaurant.booking_enabled %}
-						<a href={% url 'order-online' %} class="btn-menu animated fadeInUp scrollto">Order Online</a>
+						<a href={% url 'order-online' %} class="btn-menu animated fadeInUp scrollto">Order For Collection</a>
 					{% else %}
-						<a data-bs-toggle="modal" data-bs-target="#busyModal" class="btn-menu animated fadeInUp scrollto">Order Online</a>
+						<a data-bs-toggle="modal" data-bs-target="#busyModal" class="btn-menu animated fadeInUp scrollto">Order For Collection</a>
 					{% endif %}
                     <a href={% url 'book' %} class="btn-book animated fadeInUp scrollto">Book a Table</a>
                 </div>
