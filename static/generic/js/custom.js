@@ -264,14 +264,16 @@ $('.add-to-basket').on('click', function(e) {
             total: 1,
             price: $(this).data('food-price'),
             name: $(this).data('food-name'),
-            image: $(this).data('food-image')
+            image: $(this).data('food-image'),
+            show: $(this).data('show-image')
         };
     } else {
         basket[foodId] = {
             total: basket[foodId].total + 1,
             price: $(this).data('food-price'),
             name: $(this).data('food-name'),
-            image: $(this).data('food-image')
+            image: $(this).data('food-image'),
+            show: $(this).data('show-image')
         };
     }
 
@@ -298,7 +300,8 @@ $('.reduce-to-basket').on('click', function(e) {
                 total: basketValue,
                 price: $(this).data('food-price'),
                 name: $(this).data('food-name'),
-                image: $(this).data('food-image')
+                image: $(this).data('food-image'),
+                show: $(this).data('show-image')
             };
         } else {
             basketValue = 0;
@@ -479,11 +482,13 @@ function buildProductListHtmlFromBasket() {
     var productList = $('.product-list');
     for (var foodId in basket) {
         var food = basket[foodId];
+        var foodImage = ''
+        if (food.show == 1) {
+            foodImage = `<a href="${food.image}" data-lightbox="image-set" data-title="${food.name}"><img src="${food.image}" alt="${food.name}" class="menu-img"></a>`
+        }
         var productHtml = `
             <div class="product-item d-flex align-items-center">
-                <a href="${food.image}" data-lightbox="image-set" data-title="${food.name}">
-                    <img src="${food.image}" alt="${food.name}" class="menu-img">
-                </a>
+                ${foodImage}
                 <div class="details col-md-3 col-lg-3 col-xl-3">
                     <h5>${food.name}</h5>                    
                 </div>
@@ -523,7 +528,8 @@ function buildProductListHtmlFromBasket() {
                             data-food-image="${food.image}"
                             data-food-name="${food.name}"
                             data-food-id="${foodId}"
-                            data-food-price="${food.price}">
+                            data-food-price="${food.price}"
+                            data-show-image="${food.show}">
                         <i
                             class="fa-solid fa-minus"></i>
                         </button>
@@ -543,14 +549,16 @@ function buildProductListHtmlFromBasket() {
                 total: 1,
                 price: $(this).data('food-price'),
                 name: $(this).data('food-name'),
-                image: $(this).data('food-image')
+                image: $(this).data('food-image'),
+                show: $(this).data('show-image')
             };
         } else {
             basket[foodId] = {
                 total: basket[foodId].total + 1,
                 price: $(this).data('food-price'),
                 name: $(this).data('food-name'),
-                image: $(this).data('food-image')
+                image: $(this).data('food-image'),
+                show: $(this).data('show-image')
             };
         }
 
@@ -577,7 +585,8 @@ function buildProductListHtmlFromBasket() {
                     total: basketValue,
                     price: $(this).data('food-price'),
                     name: $(this).data('food-name'),
-                    image: $(this).data('food-image')
+                    image: $(this).data('food-image'),
+                    show: $(this).data('show-image')
                 };
             } else {
                 basketValue = 0;
