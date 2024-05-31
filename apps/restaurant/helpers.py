@@ -165,7 +165,37 @@ def send_email(cust_name, cust_total, book_date, book_time, cus_phone, cus_email
             }
         ]
     }
-    result = mailjet.send.create(data=data)    
+    result = mailjet.send.create(data=data)
+
+def send_order_email(book_date, book_time, cus_phone, cus_email, booking_detail_html, total_price_html):
+    mailjet = Client(auth=(settings.MAIL_API_KEY, settings.MAIL_SECRET_KEY))
+    data = {
+        'FromEmail': settings.FROM_EMAIL,
+        'FromName': 'Viet An Restaurant',
+        'Subject': 'Your Order at Viet An Restaurant is confirmed',
+        'Text-part': 'Thank you for your order',
+        'Html-part': '<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Order Confirmation - Viet An Restaurant</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <style> body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; } .container { width: 80%; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } .header { text-align: center; margin-bottom: 20px; } .header img { max-width: 150px; } .header h1 { margin: 10px 0; color: #d9534f; } .contact-info, .customer-info { text-align: center; margin-bottom: 20px; color: #666; } .contact-info p, .customer-info p { margin: 5px 0; } .order-details { width: 100%; border-collapse: collapse; } .order-details th, .order-details td { padding: 12px; border: 1px solid #ddd; text-align: left; } .order-details th { background-color: #f8f8f8; } .order-details tbody tr:hover { background-color: #f1f1f1; } .total { text-align: right; font-size: 18px; margin-top: 20px; color: #d9534f; } .terms { margin-top: 30px; font-size: 12px; color: #666; } .terms h3 { color: #d9534f; } .icon { margin-right: 5px; } </style></head><body> <div class="container"> <div class="header"> <img src="https://vietan.phapsuit.com/static/demo1/assets/img/logo.png" alt="Restaurant Logo"> <h1>Viet An Restaurant</h1> </div> <div class="contact-info"> <p><i class="fas fa-map-marker-alt icon"></i>73-75 Skene Street, Aberdeen, AB10 1QD</p> <p><i class="fas fa-phone icon"></i>Phone: 01224 356826</p> </div> <div class="customer-info"> <h2>Customer Information</h2> <p><i class="fas fa-phone icon"></i>Phone: [[var:phone]]</p> <p><i class="fas fa-envelope icon"></i>Email: [[var:email]]</p> <p><i class="fas fa-clock icon"></i>Pickup Time: [[var:date]] - [[var:time]]</p> </div> <h2>Order Confirmation</h2> [[var:bookingdetail]] <div class="total"> [[var:total]] </div> <div class="terms"> <h3>Terms and Conditions</h3> <p>Please review your order carefully. If there are any issues, contact us immediately.</p> </div> </div></body></html>',
+        'Vars': {
+            "phone": cus_phone,
+            "email": cus_email,
+            "date": book_date,
+            "time": book_time,
+            "bookingdetail": booking_detail_html,
+            "total": total_price_html,
+        },
+        'Recipients':
+        [
+            {
+                "Email": cus_email,
+                "Name": cus_email,
+            },
+            {
+                "Email": settings.CC_EMAIL,
+                "Name": "Viet An Restaurant"
+            }
+        ]
+    }
+    result = mailjet.send.create(data=data)
 
 def get_day_suffix(day):
     if 11 <= day <= 13:

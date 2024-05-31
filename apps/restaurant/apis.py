@@ -311,6 +311,7 @@ def order(request):
         )
 
         booking_detail_html = ''
+        booking_mail_html = '<table class="order-details"><thead> <tr> <th>Food Item</th> <th>Quantity</th> <th>Price</th> <th>Total</th> </tr> </thead><tbody>'
         for basket_id, details in booking_details.items():
             food = Food.objects.get(pk=basket_id)
             BookingDetail.objects.create(
@@ -320,14 +321,21 @@ def order(request):
                 price=food.price
             )
             booking_detail_html += f'<li>{food.name} x {details["total"]} - ${food.price * details["total"]}</li>'
+            booking_mail_html += f'<tr> <td>{food.name}</td> <td>{details["total"]}</td> <td>${food.price}</td> <td>${food.price * details["total"]}</td> </tr>'
+        booking_mail_html += '</tbody></table>'
 
         booking_detail_html = '<ul>' + booking_detail_html + '</ul>'
         total_price_html = f'<p><b>Total price</b>: ${total_price}</p>'
+        booking_total_mail = f'<strong>Total: ${total_price}</strong>'
 
         # Call Calender API
         restaurant = Restaurant.objects.first()
         helpers.order_calender_api(date, booking_time, 30, email, phone, 1, restaurant.address, booking_detail_html,
                                    total_price_html, special_requests)
+
+        # Send email
+        booking
+        helpers.send_order_email(date, booking_time, phone, email, booking_mail_html, booking_total_mail)
 
         return JsonResponse({'message': 'Booking ordered successfully.', 'booking_time': booking_time})
     else:
