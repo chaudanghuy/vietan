@@ -90,18 +90,18 @@ Bookings Management
                             {{booking_time.start_time}}
                           {% endif %}>
                         {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}
-                          {% for book_phone in booking_time.booking_phone %}
-                            {% with parts=book_phone|split:"-"  %}
+                          {% for book_name in booking_time.table_book_name %}
+                            {% with parts=book_name|split:"-"  %}
                               {% if parts.0 == table.table_number|stringformat:"i" %}
                                 <small id="myInput">{{parts.1}}</small>
                               {% endif %}
                             {% endwith %}
                           {% endfor %}
                           -
-                          {% for book_email in booking_time.table_book_name %}
-                            {% with parts=book_email|split:"-"  %}
+                          {% for book_guest in booking_time.number_of_guests %}
+                            {% with parts=book_guest|split:"-"  %}
                               {% if parts.0 == table.table_number|stringformat:"i" %}
-                                <small>{{parts.1}}</small>
+                                <small><b>{{parts.1}}</b></small>
                                 {% for booking_id in booking_time.booking_ids %}
                                     {% with b_parts=booking_id|split:"|"  %}
                                       {% if b_parts.0 == table.table_number|stringformat:"i" %}

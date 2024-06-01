@@ -261,7 +261,7 @@ def admin_booking_tables(request):
             'booking_ids': f'{booking.table.table_number}|{booking.id}',
             'booking_phone': f'{booking.table.table_number}-{booking.customer.phone}',
             'number_of_guests': f'{booking.table.table_number}-{booking.number_of_guests}',
-            'booking_name': f'{booking.table.table_number}-{booking.customer.user.email}'            
+            'booking_name': f'{booking.table.table_number}-{booking.customer.user.fullname}'
         })    
 
     # Generate a list of available time slots based on total people
