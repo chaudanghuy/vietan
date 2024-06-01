@@ -334,7 +334,6 @@ def order(request):
                                    total_price_html, special_requests)
 
         # Send email
-        booking
         helpers.send_order_email(date, booking_time, phone, email, booking_mail_html, booking_total_mail)
 
         return JsonResponse({'message': 'Booking ordered successfully.', 'booking_time': booking_time})
