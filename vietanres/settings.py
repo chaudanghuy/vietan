@@ -43,6 +43,9 @@ CLOUDINARY_NAME = os.getenv("CLOUDINARY_NAME")
 CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
 CLOUDINARY_SECRET = os.getenv("CLOUDINARY_SECRET")
 
+# Book Logic
+BOOK_LIMIT_QTY_PER_TABLE = os.getenv("BOOK_LIMIT_QTY_PER_TABLE")
+
 cloudinary.config(
     cloud_name=CLOUDINARY_NAME,
     api_key=CLOUDINARY_API_KEY,
