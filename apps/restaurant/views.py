@@ -267,7 +267,7 @@ def admin_booking_tables(request):
     # Generate a list of available time slots based on total people
     available_time_slots = []
     current_time = datetime(booking_date.year, booking_date.month, booking_date.day, 17, 0)  # Assuming restaurant opens at 17:00 PM
-    closing_time = datetime(booking_date.year, booking_date.month, booking_date.day, 22, 15)  # Assuming restaurant closes at 10:00 PM
+    closing_time = datetime(booking_date.year, booking_date.month, booking_date.day, 22, 30)  # Assuming restaurant closes at 10:00 PM
 
     table_codes_with_id = []
     while current_time < closing_time:
