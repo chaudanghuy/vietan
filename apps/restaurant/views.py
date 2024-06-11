@@ -251,7 +251,7 @@ def admin_booking_tables(request):
     order_time_slots = []
     for booking in bookings:
         start_time = booking.booking_time
-        end_time = datetime.strptime(start_time, '%H:%M') + timedelta(minutes=booking.duration-5)
+        end_time = datetime.strptime(start_time, '%H:%M') + timedelta(minutes=booking.duration-10)
         booked_time_slots.append({
             'start_time': start_time,  # Format time in AM/PM
             'end_time': end_time.strftime('%H:%M'),
@@ -313,7 +313,7 @@ def admin_booking_tables(request):
                 'table_book_name': table_book_name
             })
 
-        current_time += timedelta(minutes=5)  # Assuming each slot is 60 minutes
+        current_time += timedelta(minutes=15)  # Assuming each slot is 60 minutes
 
     tables = MyTable.objects.all()
     
