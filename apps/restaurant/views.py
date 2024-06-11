@@ -272,7 +272,7 @@ def admin_booking_tables(request):
     table_codes_with_id = []
     while current_time < closing_time:
         slot_start_time = current_time
-        slot_end_time = current_time + timedelta(minutes=15)  # Assuming each slot is 60 minutes
+        slot_end_time = current_time + timedelta(minutes=5)  # Assuming each slot is 60 minutes
         
         slot_already_booked = any(
             slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']
@@ -313,7 +313,7 @@ def admin_booking_tables(request):
                 'table_book_name': table_book_name
             })
 
-        current_time += timedelta(minutes=15)  # Assuming each slot is 60 minutes
+        current_time += timedelta(minutes=5)  # Assuming each slot is 60 minutes
 
     tables = MyTable.objects.all()
     
