@@ -28,17 +28,10 @@ def book_table(request):
 
         if is_updated:
             is_updated = int(is_updated)
-
         has_booking_duration = False
         if is_updated == 1:
             has_booking_duration = True
             duration = int(booking_duration)
-            try:
-                booking = Booking.objects.get(id=data_booking_id)
-                booking.delete()
-                helpers.delete_calender_api(booking.booking_event_id)
-            except:
-                booking = None
 
         try:
             booking_datetime = datetime.strptime(booking_date + ' ' + booking_time, '%Y-%m-%d %H:%M')
@@ -67,60 +60,70 @@ def book_table(request):
                 bookings_in_slot.append(booking)
 
         # Remove hardcoded
-        if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE):
+        if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE) and is_updated != 1:
             return JsonResponse('We are fully booked at this time.', status=400, safe=False)
 
-        available_tables = MyTable.objects.filter(
-            status=Status.AVAILABLE,
-            capacity__gte=total_customer // tables_required
-        ).exclude(
-            id__in=[booking.table.id for booking in bookings_in_slot]
-        ).distinct()
+        if is_updated == 1 and has_booking_duration:
+            booking = Booking.objects.get(id=data_booking_id)
+            booking_code = booking.booking_code
+            booking.duration = duration
+            booking.booking_date = booking_date
+            booking.booking_time = booking_time
+            booking.number_of_guests = total_customer
+            booking.save()
 
-        if len(available_tables) < tables_required:
-            return JsonResponse('We are fully booked at this time', status=400, safe=False)
-
-        # Create user
-        current_user = User.objects.filter(username=data.get('email')).first()
-        if current_user is None:
-            current_user = User.objects.create(
-                fullname=data.get('fullname'),
-                username=data.get('email'),
-                email=data.get('email'),
-                password='123'
-            )
+            helpers.delete_calender_api(booking.booking_event_id)
         else:
-            current_user.fullname = data.get('fullname')
-            current_user.username = data.get('email')
-            current_user.email = data.get('email')
-            current_user.save()
+            available_tables = MyTable.objects.filter(
+                status=Status.AVAILABLE,
+                capacity__gte=total_customer // tables_required
+            ).exclude(
+                id__in=[booking.table.id for booking in bookings_in_slot]
+            ).distinct()
 
-        customer = Customer.objects.filter(user=current_user).first()
-        if customer is None:
-            customer = Customer.objects.create(
-                user=current_user,
-                address=data.get('email'),
-                phone=data.get('phone')
-            )
-        else:
-            customer.address = data.get('email')
-            customer.phone = data.get('phone')
-            customer.save()
+            if len(available_tables) < tables_required:
+                return JsonResponse('We are fully booked at this time', status=400, safe=False)
 
-        booking_code = uuid.uuid4()
-        for i in range(tables_required):
-            table = available_tables[i]
-            booking = Booking.objects.create(
-                customer=customer,
-                table=table,
-                booking_date=booking_date,
-                booking_time=booking_time,
-                booking_code=booking_code,
-                duration=duration,
-                number_of_guests=total_customer,
-                special_requests=data.get('special_requests')
-            )
+            # Create user
+            current_user = User.objects.filter(username=data.get('email')).first()
+            if current_user is None:
+                current_user = User.objects.create(
+                    fullname=data.get('fullname'),
+                    username=data.get('email'),
+                    email=data.get('email'),
+                    password='123'
+                )
+            else:
+                current_user.fullname = data.get('fullname')
+                current_user.username = data.get('email')
+                current_user.email = data.get('email')
+                current_user.save()
 
+            customer = Customer.objects.filter(user=current_user).first()
+            if customer is None:
+                customer = Customer.objects.create(
+                    user=current_user,
+                    address=data.get('email'),
+                    phone=data.get('phone')
+                )
+            else:
+                customer.address = data.get('email')
+                customer.phone = data.get('phone')
+                customer.save()
+
+            booking_code = uuid.uuid4()
+            for i in range(tables_required):
+                table = available_tables[i]
+                booking = Booking.objects.create(
+                    customer=customer,
+                    table=table,
+                    booking_date=booking_date,
+                    booking_time=booking_time,
+                    booking_code=booking_code,
+                    duration=duration,
+                    number_of_guests=total_customer,
+                    special_requests=data.get('special_requests')
+                )
 
         restaurant = Restaurant.objects.all()[0]
         # Call Calender API
@@ -429,9 +432,3 @@ def delete_bookings(request):
             booking = None
         return JsonResponse({'message': 'Bookings deleted successfully.'})
     return JsonResponse({'message': 'An error has occured'}, 400)
-
-
-@require_GET
-def clear_google_events(request):
-    helpers.clear_google_calendar_events()
-    return JsonResponse({'message': 'Clear calender successfully.'})
