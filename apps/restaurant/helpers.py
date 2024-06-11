@@ -207,3 +207,17 @@ def get_day_suffix(day):
     if day % 10 == 3:
         return 'rd'
     return 'th'
+
+def clear_google_calendar_events():
+    credentials = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES
+    )
+    service = googleapiclient.discovery.build("calendar", "v3", credentials=credentials)
+    page_token = None
+    while True:
+        events = service.events().list(calendarId=CALENDAR_ID, pageToken=page_token).execute()
+        for event in events['items']:
+            service.events().delete(calendarId=CALENDAR_ID, eventId=event['id']).execute()
+        page_token = events.get('nextPageToken')
+        if not page_token:
+            break
