@@ -251,7 +251,7 @@ def admin_booking_tables(request):
     order_time_slots = []
     for booking in bookings:
         start_time = booking.booking_time
-        end_time = datetime.strptime(start_time, '%H:%M') + timedelta(minutes=booking.duration-5)
+        end_time = datetime.strptime(start_time, '%H:%M') + timedelta(minutes=booking.duration)
         booked_time_slots.append({
             'start_time': start_time,  # Format time in AM/PM
             'end_time': end_time.strftime('%H:%M'),
@@ -297,6 +297,7 @@ def admin_booking_tables(request):
             available_time_slots.append({
                 'start_time': slot_start_time.strftime('%H:%M'),
                 'end_time': slot_end_time.strftime('%H:%M'),
+                'current_time': current_time,
                 'flag': 'not-booked',
                 'booking_phone': slot_start_time.strftime('%H:%M')
             })
@@ -304,6 +305,7 @@ def admin_booking_tables(request):
             available_time_slots.append({
                 'start_time': slot_start_time.strftime('%H:%M'),
                 'end_time': slot_end_time.strftime('%H:%M'),
+                'current_time': current_time,
                 'flag': 'booked',
                 'table': table_booked,
                 'booking_code': table_codes,
