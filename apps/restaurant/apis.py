@@ -39,8 +39,8 @@ def book_table(request):
             return JsonResponse('Invalid booking date or time.', status=400, safe=False)
 
         end_time_check = (booking_datetime + timedelta(minutes=duration-5)).strftime('%H:%M')
-        if booking_datetime.hour >= 22:
-            return JsonResponse('We are fully booked at this time', status=400, safe=False)
+        # if booking_datetime.hour >= 22:
+        #     return JsonResponse('We are fully booked at this time', status=400, safe=False)
 
         # Get all bookings for the given date
         bookings = Booking.objects.filter(
