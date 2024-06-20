@@ -23,7 +23,7 @@ def book_table(request):
         is_updated = data.get('is_updated')
         data_booking_id = data.get('data_booking_id')
         booking_duration = data.get('booking_duration')
-        duration = 90 if total_customer <= 4 else (105 if total_customer <= 6 else 120)
+        duration = 75 if total_customer <= 4 else (90 if total_customer <= 7 else 105)
         tables_required = total_customer // int(settings.BOOK_LIMIT_QTY_PER_TABLE) + (1 if total_customer % int(settings.BOOK_LIMIT_QTY_PER_TABLE) != 0 else 0)
 
         if is_updated:
