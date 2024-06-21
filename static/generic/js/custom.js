@@ -201,6 +201,8 @@ $('#booking-btn').on('click', function(e) {
         },
         success: function(response) {
 
+            $('.php-email-form').find('input').val('');
+
             $('.loading').hide();
             $('.error-message').hide();
             $('.sent-message').text(response.message).show();
