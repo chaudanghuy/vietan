@@ -14,6 +14,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/delete-booking/' + bookingId, // Replace with your Django backend endpoint
             type: 'DELETE',
+            async: false,
             success: function(response) {
                 console.log(response) // Log the response from the server
                     // If deletion is successful, remove the corresponding row from the table
@@ -75,6 +76,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/accounts/menu?food=' + food_id,
             type: 'POST',
+            async: false,
             data: formData,
             contentType: false,
             processData: false,
@@ -116,6 +118,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/accounts/menu-add',
             type: 'POST',
+            async: false,
             data: formData,
             contentType: false,
             processData: false,
@@ -142,6 +145,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/api/toggle-availability',
             method: 'POST',
+            async: false,
             data: {
                 status: toggleStatus,
                 csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
@@ -221,6 +225,7 @@ $('.show-booking-detail').click(function() {
     $.ajax({
         url: '/api/bookings?booking_id=' + booking_id,
         type: 'GET',
+        async: false,
         success: function(response) {
             var tableDetail = $('#tableDetail')
             tableDetail.html('')
@@ -251,6 +256,7 @@ $('.booking-modal-detail').on('click', function() {
     $.ajax({
             url: '/api/bookings?booking_id=' + data_booking_id,
             type: 'GET',
+            async: false,
             success: function(response) {
                 var html = ''
                 html += 'Booking <code>#' + response.id + '</code>'
@@ -284,6 +290,7 @@ $('.booking-modal-detail').on('click', function() {
         $.ajax({
             url: '/api/book-table',
             method: 'POST',
+            async: false,
             data: {
                 data_booking_id: data_booking_id,
                 is_updated: 1,
@@ -311,6 +318,7 @@ $('.booking-modal-detail').on('click', function() {
         $.ajax({
             url: '/api/cancel-booking',
             method: 'POST',
+            async: false,
             data: {
                 data_booking_id: data_booking_id,
                 booking_event: $('[name=booking-event-id]').val(),
@@ -348,6 +356,7 @@ $('#add-booking-modal').on('click', function(e) {
         $.ajax({
             url: '/api/book-table',
             method: 'POST',
+            async: false,
             data: {
                 booking_date: $('[name=booking-modal-add-date]').val(),
                 booking_time: $('[name=booking-modal-add-time]').val(),

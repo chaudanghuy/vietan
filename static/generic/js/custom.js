@@ -122,6 +122,7 @@ $('#sendMessage').on('click', function(e) {
     $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
         type: 'POST',
         data: JSON.stringify(data),
+        async: false,
         contentType: 'application/json'
     }).done(function() {
         $('.sent-message').text('Your mail is sent!').show();
@@ -195,6 +196,7 @@ $('#booking-btn').on('click', function(e) {
     $.ajax({
         url: '/api/book-table',
         type: 'POST',
+        async: false,
         data: {
             fullname: fullname,
             email: email,
@@ -233,6 +235,7 @@ $('#booking-btn').on('click', function(e) {
 
             $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
                 type: 'POST',
+                async: false,
                 data: JSON.stringify(data),
                 contentType: 'application/json'
             }).done(function() {
@@ -411,6 +414,7 @@ $('#order-finish').on('click', function(e) {
 
     $.ajax({
         url: '/api/order',
+        async: false,
         data: {
             basket: JSON.stringify(basket),
             email: email,
