@@ -308,10 +308,6 @@ $('.booking-modal-detail').on('click', function() {
 
     $('#admin-cancel-booking').on('click', function() {
         $(this).prop('disabled', true);
-        var confirm = window.confirm("Are you sure you want to cancel this booking?")
-        if (confirm == false) {
-            return;
-        }
         $.ajax({
             url: '/api/cancel-booking',
             method: 'POST',
@@ -344,6 +340,10 @@ $('#add-booking-modal').on('click', function(e) {
      $('#adminAddBookingModal').modal('show');
 
     $('#admin-add-booking').on('click', function() {
+        if (isUpdated == 1) {
+            return;
+        }
+        isUpdated = 1;
         $(this).prop('disabled', true);
         $.ajax({
             url: '/api/book-table',
