@@ -56,8 +56,6 @@ def book_table(request):
             end_time = (booking_datetime + timedelta(minutes=duration)).strftime('%H:%M')
             if start_time_booking <= booking_time <= end_time_booking:
                 bookings_in_slot.append(booking)
-            elif booking_time <= start_time_booking <= end_time:
-                bookings_in_slot.append(booking)
 
         # Remove hardcoded
         if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE) and is_updated != 1:
@@ -420,6 +418,7 @@ def toggle_booking_status(request):
 
 
 @require_POST
+@csrf_exempt
 def delete_bookings(request):
     if request.method == 'POST':
         booking_id = request.POST.get('data_booking_id')
@@ -432,3 +431,10 @@ def delete_bookings(request):
             booking = None
         return JsonResponse({'message': 'Bookings deleted successfully.'})
     return JsonResponse({'message': 'An error has occured'}, 400)
+
+@require_POST
+@csrf_exempt
+def clear_bookings(request):
+    if request.method == 'POST':
+        helpers.clear_google_calendar_events()
+    return JsonResponse({'message': 'Booking clear successfully'}, 200)

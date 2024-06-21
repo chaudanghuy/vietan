@@ -299,7 +299,8 @@ def admin_booking_tables(request):
                 'end_time': slot_end_time.strftime('%H:%M'),
                 'current_time': current_time,
                 'flag': 'not-booked',
-                'booking_phone': slot_start_time.strftime('%H:%M')
+                'booking_phone': slot_start_time.strftime('%H:%M'),
+                'booking_ids': slot_start_time.strftime('%H:%M'),
             })
         else:
             available_time_slots.append({
