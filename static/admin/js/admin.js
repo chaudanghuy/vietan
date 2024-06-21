@@ -1,4 +1,5 @@
 var showFoodImage = 1;
+var isUpdated = 0;
 
 $(document).ready(function() {
     $('#datepicker').datepicker({
@@ -267,11 +268,18 @@ $('.booking-modal-detail').on('click', function() {
 
                 $('.admin-booking-body').html(table);
 
+                $('#admin-update-booking').data('booking-id', response.id);
                 $('#adminBookingModal').modal('show');
             }
         });
 
     $('#admin-update-booking').on('click', function() {
+        if (isUpdated == 1) {
+            return;
+        }
+
+        isUpdated = 1;
+        var updatedBookingId = $(this).data('booking-id');
         $(this).prop('disabled', true);
         $.ajax({
             url: '/api/book-table',
