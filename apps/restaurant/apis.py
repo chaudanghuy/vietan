@@ -56,6 +56,8 @@ def book_table(request):
             end_time = (booking_datetime + timedelta(minutes=duration)).strftime('%H:%M')
             if start_time_booking <= booking_time <= end_time_booking:
                 bookings_in_slot.append(booking)
+            elif booking_time <= start_time_booking <= end_time:
+                bookings_in_slot.append(booking)
 
         # Remove hardcoded
         if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE) and is_updated != 1:
