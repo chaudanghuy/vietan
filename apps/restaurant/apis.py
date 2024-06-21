@@ -83,31 +83,18 @@ def book_table(request):
                 return JsonResponse('We are fully booked at this time', status=400, safe=False)
 
             # Create user
-            current_user = User.objects.filter(username=data.get('email')).first()
-            if current_user is None:
-                current_user = User.objects.create(
-                    fullname=data.get('fullname'),
-                    username=data.get('email'),
-                    email=data.get('email'),
-                    password='123'
-                )
-            else:
-                current_user.fullname = data.get('fullname')
-                current_user.username = data.get('email')
-                current_user.email = data.get('email')
-                current_user.save()
+            current_user = User.objects.create(
+                fullname=data.get('fullname'),
+                username=data.get('email'),
+                email=data.get('email'),
+                password='123'
+            )
 
-            customer = Customer.objects.filter(user=current_user).first()
-            if customer is None:
-                customer = Customer.objects.create(
-                    user=current_user,
-                    address=data.get('email'),
-                    phone=data.get('phone')
-                )
-            else:
-                customer.address = data.get('email')
-                customer.phone = data.get('phone')
-                customer.save()
+            customer = Customer.objects.create(
+                user=current_user,
+                address=data.get('email'),
+                phone=data.get('phone')
+            )
 
             booking_code = uuid.uuid4()
             for i in range(tables_required):
