@@ -301,7 +301,7 @@ $('.booking-modal-detail').on('click', function() {
                 window.location.reload();
             },
             error: function(xhr, status, error) {
-                alert(xhr.responseText);
+                console.log(xhr.responseText);
             }
         })
     })
@@ -362,7 +362,7 @@ $('#add-booking-modal').on('click', function(e) {
                 window.location.href = '/accounts/calendar?date='+ $('[name=booking-modal-add-date]').val();
             },
             error: function(xhr, status, error) {
-                alert(xhr.responseText);
+                console.log(xhr.responseText);
             }
         })
     })
