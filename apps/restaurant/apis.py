@@ -48,7 +48,10 @@ def book_table(request):
         ).exclude(customer__address__icontains='pickup-order')
 
         bookings_in_slot = []
+        booking_tables_check = []
         for booking in bookings:
+            if booking.table.id in booking_tables_check:
+                continue
             start_time_booking = booking.booking_time
             end_time_booking = (datetime.strptime(booking.booking_time, '%H:%M') + timedelta(
                 minutes=booking.duration)).strftime('%H:%M')
@@ -56,8 +59,10 @@ def book_table(request):
             end_time = (booking_datetime + timedelta(minutes=duration)).strftime('%H:%M')
             if start_time_booking <= booking_time <= end_time_booking:
                 bookings_in_slot.append(booking)
+                booking_tables_check.append(booking.table.id)
             elif booking_time <= start_time_booking <= end_time:
                 bookings_in_slot.append(booking)
+                booking_tables_check.append(booking.table.id)
 
         # Remove hardcoded
         if bookings_in_slot and len(bookings_in_slot) > int(settings.TOTAL_TABLE) and is_updated != 1:
