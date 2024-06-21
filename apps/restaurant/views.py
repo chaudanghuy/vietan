@@ -260,6 +260,7 @@ def admin_booking_tables(request):
             'booking_code': booking.booking_code,
             'booking_ids': f'{booking.table.table_number}|{booking.id}',
             'booking_phone': f'{booking.table.table_number}-{booking.customer.phone}',
+            'booking_email': f'{booking.table.table_number}-{booking.customer.user.email}',
             'number_of_guests': f'{booking.table.table_number}-{booking.number_of_guests}',
             'booking_name': f'{booking.table.table_number}-{booking.customer.user.fullname}'
         })    
@@ -288,6 +289,8 @@ def admin_booking_tables(request):
                        slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]
         table_book_phones = [slot['booking_phone'] for slot in booked_time_slots if
                              slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]
+        table_book_emails = [slot['booking_email'] for slot in booked_time_slots if
+                             slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]
         table_book_total_guests = [slot['number_of_guests'] for slot in booked_time_slots if
                                    slot['start_time'] <= slot_start_time.strftime('%H:%M') <= slot['end_time']]         
         table_book_name = [slot['booking_name'] for slot in booked_time_slots if
@@ -300,7 +303,7 @@ def admin_booking_tables(request):
                 'current_time': current_time,
                 'flag': 'not-booked',
                 'booking_phone': slot_start_time.strftime('%H:%M'),
-                'booking_ids': slot_start_time.strftime('%H:%M'),
+                'booking_email': slot_start_time.strftime('%H:%M'),
             })
         else:
             available_time_slots.append({
@@ -312,6 +315,7 @@ def admin_booking_tables(request):
                 'booking_code': table_codes,
                 'booking_ids': table_ids,
                 'booking_phone':table_book_phones,
+                'booking_email':table_book_emails,
                 'number_of_guests': table_book_total_guests,
                 'table_book_name': table_book_name
             })
