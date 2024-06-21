@@ -1,5 +1,6 @@
 var container = $('.book-a-table form').length > 0 ? $('.book-a-table form').parent() : "body";
 var basket = [];
+var isUpdated = 0;
 
 $(function() {
     if ($('.product-list').length > 0) {
@@ -130,6 +131,11 @@ $('#sendMessage').on('click', function(e) {
 });
 
 $('#booking-btn').on('click', function(e) {
+    if (isUpdated == 1) {
+        return;
+    }
+
+    isUpdated = 1;
     e.preventDefault();
     var fullname = $('input[name=fullname]').val().trim();
     if (fullname === '') {
