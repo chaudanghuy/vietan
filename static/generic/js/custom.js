@@ -132,11 +132,6 @@ $('#sendMessage').on('click', function(e) {
 });
 
 $('#booking-btn').on('click', function(e) {
-    if (isUpdated == 1) {
-        return;
-    }
-
-    isUpdated = 1;
     e.preventDefault();
     var fullname = $('input[name=fullname]').val().trim();
     if (fullname === '') {
