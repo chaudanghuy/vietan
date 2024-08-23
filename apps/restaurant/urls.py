@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/bookings', apis.get_bookings, name='bookings'),
     path('api/toggle-availability', apis.toggle_booking_status, name='toggle-availability'),
     path('api/cancel-booking', apis.delete_bookings, name='cancel-booking'),
+    path('api/clear-bookings', apis.clear_bookings, name='clear-booking'),
 
     # Test
     # path('create-test-user', tests.create_test_user, name='create-test-user'),

@@ -4,3 +4,8 @@ apps/restaurant/__pycache__
 db.sqlite3
 google-credentials.json
 *.pyc
+*.log
+*.pot
+*.pyc
+__pycache__
+media
