@@ -48,89 +48,15 @@ Bookings Management
                     </div>
                 </div>
                 <div class="col-sm-12 row text-right">
-                    <button id="add-booking-modal" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Add Booking</button>
+                    <a href="https://viet-restaurant-hanoi.resos.com/booking" target="_blank" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Add Booking</a>
                 </div>
             </div>
 
-			<div class="card-box mb-30">
-			<!-- Bookings -->
-            <div class="card-box mb-30">
-                <div class="pd-20 row">
-                    <div class="col-md-12">
-                        <div class="text-center">
-                            <input id="booking_date_reload" type="date" class="form-control" value="{{ booking_date }}"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="pb-20">
-                    <table id="booking-table" class="table table-hover table-bordered table-responsive">
-                  <tr>
-                    <th class="text-center">
-                      <i class="far fa-calendar-check"></i>
-                    </th>
-                    {% for booking_time in available_time_slots %}
-                      <th>{{booking_time.start_time}}</th>
-                    {% endfor %}
-                  </tr>
-                  {% for table in tables %}
-                  <tr>
-                    <td class="text-nowrap">Table {{ table.table_number }}</td>
-                    {% for booking_time in available_time_slots %}
-                      <td style="background-color: {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}powderblue;{% endif %}"
-                          data-current-time="{{ booking_time.current_time }}"
-                          data-booking-phone="{{booking_time.booking_phone}}"
-                          data-booking-id=
-                          {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}
-                            {% for book_phone in booking_time.booking_email %}
-                              {% with parts_ph=book_phone|split:"-"  %}
-                                {% if parts_ph.0 == table.table_number|stringformat:"i" %}
-                                {{parts_ph.1}}
-                                {% endif %}
-                              {% endwith %}
-                            {% endfor %}
-                          {% else %}
-                            {{booking_time.start_time}}
-                          {% endif %}>
-                        {% if booking_time.flag == 'booked' and table.table_number in booking_time.table %}
-                          {% for book_name in booking_time.table_book_name %}
-                            {% with parts=book_name|split:"-"  %}
-                              {% if parts.0 == table.table_number|stringformat:"i" %}
-                                <small id="myInput">{{parts.1}}</small>
-                              {% endif %}
-                            {% endwith %}
-                          {% endfor %}
-                          -
-                          {% for book_guest in booking_time.number_of_guests %}
-                            {% with parts=book_guest|split:"-"  %}
-                              {% if parts.0 == table.table_number|stringformat:"i" %}
-                                <small><b>{{parts.1}}</b></small>
-                                {% for booking_id in booking_time.booking_ids %}
-                                    {% with b_parts=booking_id|split:"|"  %}
-                                      {% if b_parts.0 == table.table_number|stringformat:"i" %}
-                                        <button class="booking-modal-detail" data-booking-id="{{b_parts.1}}">
-                                          <i class="fa-solid fa-user-group"></i>
-                                        </button>
-                                      {% endif %}
-                                    {% endwith %}
-                                {% endfor %}
-                              {% endif %}
-                            {% endwith %}
-                          {% endfor %}
-
-                      {% endif %}
-                      </td>
-                    {% endfor %}
-                  </tr>
-                  {% endfor %}
-                </table>
-                </div>
-            </div>
-            <!-- Bookings -->
-
+			<div class="card-box mb-30">			
 			<!-- Orders -->
 			<div class="card-box mb-30">
 				<div class="embed-responsive embed-responsive-1by1">
-					<iframe class="embed-responsive-item" src="https://calendar.google.com/calendar/embed?src=eca7b034a71caa90eb1b328feeb53f573a07a7ad7a4d8686efd76bb5f048672e%40group.calendar.google.com&ctz=Asia%2FHo_Chi_Minh" style="border: 0" frameborder="0" scrolling="no">
+					<iframe class="embed-responsive-item" src="https://app.resos.com/mEpssNj82av6eTjoj/bookings/timetable/today" style="border: 0" frameborder="0" scrolling="no">
 					</iframe>
 				</div>
 			</div>

@@ -201,12 +201,12 @@ def customer_book_process(request):
 
 def admin_login(request):
     if request.user.is_authenticated:
-        return redirect('profile')
+        return redirect('calendar')
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            return redirect('profile')
+            return redirect('calendar')
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
