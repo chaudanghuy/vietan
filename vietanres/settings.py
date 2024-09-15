@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import cloudinary
+import dj_database_url
 
 load_dotenv()
 
@@ -31,6 +32,8 @@ CALENDAR_ORDER_ID = os.getenv("CALENDAR_ORDER_ID")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
+db_config = dj_database_url.config(default='mysql://root:123@localhost:5202/vietan')
+db_config['ATOMIC_REQUESTS'] = True
 
 # Mail
 MAIL_API_KEY = os.getenv("MJ_APIKEY_PUBLIC")    
@@ -134,14 +137,7 @@ if DATABASE_TYPE == "sqlite":
     }
 elif DATABASE_TYPE == "mysql":
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": DB_NAME,
-            "USER": DB_USER,
-            "PASSWORD": DB_PASS,
-            "HOST": "localhost",
-            "PORT": "3306",
-        }
+        "default": db_config
     }
 else:
     DATABASES = {
